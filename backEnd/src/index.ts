@@ -3,12 +3,16 @@ import { ResponseJSON } from './types';
 import cors from 'cors';
 const logger = require('morgan');
 
+import apiRouter from './routes/apiRouter';
+
 const app = express();
 app.use(logger('dev'));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 const port = 8082;
+
+app.use('/apiv0', apiRouter);
 
 app.get('/apiv0', (req: Request, res: Response) => {
   const response: ResponseJSON = {
@@ -28,7 +32,6 @@ app.get('/apiv0/:id', (req: Request, res: Response) => {
 });
 
 app.post('/apiv0/', (req: Request, res: Response) => {
-  console.log(req.body);
   const title = req.body.title;
   const body = req.body.body;
   const response = {
