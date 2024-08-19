@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import { useState } from 'react';
+import Credits from './components/Credits';
 
 const url: string = 'http://free.local:8082/apiv0/'
 
@@ -71,6 +72,7 @@ function App() {
           <Text>{resultTitle}</Text>
           <Text>{resultBody}</Text>
         </View>
+        <Credits />
       </View>
     );
   }
