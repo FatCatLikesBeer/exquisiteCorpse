@@ -1,5 +1,4 @@
-import express, { Request, Response } from 'express';
-import { ResponseJSON } from './types';
+import express from 'express';
 import cors from 'cors';
 const logger = require('morgan');
 
@@ -13,37 +12,6 @@ app.use(express.urlencoded({ extended: false }));
 const port = 8082;
 
 app.use('/apiv0', apiRouter);
-
-app.get('/apiv0', (req: Request, res: Response) => {
-  const response: ResponseJSON = {
-    success: true,
-    message: "You touched the API!",
-  }
-  res.json(response);
-});
-
-app.get('/apiv0/:id', (req: Request, res: Response) => {
-  const query: String = req.params.id;
-  const response: ResponseJSON = {
-    success: true,
-    message: `You said '${query}'!`,
-  };
-  res.json(response);
-});
-
-app.post('/apiv0/', (req: Request, res: Response) => {
-  const title = req.body.title;
-  const body = req.body.body;
-  const response = {
-    success: true,
-    message: "I got what you sent",
-    data: {
-      title,
-      body
-    }
-  }
-  res.json(response);
-});
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
