@@ -11,6 +11,7 @@ const URL = process.env.EXPO_PUBLIC_EC_API_URL;
 const pb = new PocketBase(URL);
 
 function Auth(props: any) {
+  console.log(pb.authStore.model);
   const [formState, setFormState] = useState('signin');
 
   const changeFormState = () => {
@@ -24,9 +25,14 @@ function Auth(props: any) {
   const SignIn = (props: any) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [formColor, setFormColor] = useState('#2E3F37');
 
     const handleClick = async () => {
-      // Input validation should go somewhere here
+      if (emailValidator.validate(email)) {
+        setFormColor('#2E3F37');
+      } else {
+        setFormColor('red');
+      }
       try {
         const response = await pb.collection('users').authWithPassword(email, password);
         props.setUser(response.record);
@@ -38,9 +44,9 @@ function Auth(props: any) {
     return (
       <View style={styles.formContainer}>
         <Text style={styles.h2}>Sign In</Text>
-        <Text>Email:</Text>
+        <Text style={{ color: formColor }}>Email:</Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, { borderColor: formColor }]}
           value={email}
           onChangeText={setEmail}
           placeholder="writer@site.com"
