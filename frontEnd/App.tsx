@@ -21,25 +21,7 @@ const USER2_PASSWORD = process.env.EXPO_PUBLIC_USER2_PASSWORD;
 const pb = new PocketBase(URL);
 
 function App() {
-  const [content, setContent] = useState({ content: "nothing here!" });
-  const [user, setUser] = useState({});
-
-  const FetchStuff = (props: any) => {
-
-    const handleClick = async () => {
-      // await pb.admins.authWithPassword('itisbilly@icloud.com', 'DORIC-MADAM-kloof-biter-VAPER');
-      // await pb.collection('users').authWithPassword('trilby_rasher.04@icloud.com', 'greenbottle');
-      await pb.collection('users').authWithPassword(USER2_USERNAME, USER2_PASSWORD);
-      setContent(await fetchPrompt(pb));
-    }
-
-    return (
-      <View>
-        <Button title="Click me!" onPress={handleClick}></Button>
-        <Text>{props.bdy.content}</Text>
-      </View>
-    )
-  }
+  const [user, setUser] = useState(pb.authStore.model);
 
   useEffect(() => {
     console.log(user);
@@ -48,7 +30,7 @@ function App() {
   return (
     <View style={styles.container}>
       {/* Conditional goes here which will display login or app based on 'user' state */}
-      <Auth setUser={setUser} />
+      {user?.id == undefined ? <Auth setUser={setUser} /> : <Text>"App goes here"</Text>}
       <StatusBar style="auto" />
     </View>
   );
@@ -73,7 +55,7 @@ const styles = StyleSheet.create({
 // linen    eggshell
 // #EDB183    straw
 // #F15152    persimin
-//
+
 // D7D6D4 cool light grey
 // C2B59A dark tan
 // 2E3F37 dark forest green
