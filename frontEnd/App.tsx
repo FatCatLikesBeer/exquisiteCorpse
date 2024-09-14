@@ -4,11 +4,8 @@ import { useState, useEffect } from 'react';
 import PocketBase from 'pocketbase';
 import Credits from './components/Credits';
 
-import { fetchPrompt } from './functions/fetchPromp';
-import { fetchUsersFolds } from './functions/fetchUserFolds';
-import { fetchPages } from './functions/fetchPages';
-
 import Auth from "./components/Auth";
+import Main from './components/Main';
 
 const URL = process.env.EXPO_PUBLIC_EC_API_URL;
 const ADMIN_USERANME = process.env.EXPO_PUBLIC_ADMIN_USERNAME;
@@ -29,8 +26,8 @@ function App() {
 
   return (
     <View style={styles.container}>
-      {/* Conditional goes here which will display login or app based on 'user' state */}
-      {user?.id == undefined ? <Auth setUser={setUser} /> : <Text>"App goes here"</Text>}
+      {/* user?.id == undefined ? <Auth setUser={setUser} /> : <Text>"App goes here"</Text> */}
+      <Main />
       <StatusBar style="auto" />
     </View>
   );
@@ -38,15 +35,8 @@ function App() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#D7D6D4',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
-  input: {
-    borderWidth: 1,
-    padding: 5,
-  }
 });
 
 // Colors:
