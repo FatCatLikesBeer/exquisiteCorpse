@@ -1,8 +1,16 @@
-import React from 'react';
-import { ScrollView, StyleSheet, Text, View, Button, TextInput, Pressable } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet, Text, View, Button, TextInput, Pressable, useWindowDimensions } from 'react-native';
 
 const Menu = () => {
-  const title = 'Title goes here';
+  const [small, medium] = [600, 1000];
+  // Less than small, menubar at the bottom
+  // Between small & medium, collapsable sidebar
+  // Larger than medium, left menu bar always visible
+  const width = useWindowDimensions().width;
+
+  useEffect(() => {
+    console.log(width);
+  }, [width])
 
   return (
     <ScrollView style={styles.scrollViewContainer}>
@@ -14,34 +22,14 @@ const Menu = () => {
       <Text style={styles.menuElement}>About</Text>
       <Text style={styles.menuElement}>Credits</Text>
       <Text style={styles.menuElement}>Get The App</Text>
-      <Text style={styles.menuElement}>Menu Element 4</Text>
-      <Text style={styles.menuElement}>Menu Element 1</Text>
-      <Text style={styles.menuElement}>Menu Element 2</Text>
-      <Text style={styles.menuElement}>Menu Element 3</Text>
-      <Text style={styles.menuElement}>Menu Element 4</Text>
-      <Text style={styles.menuElement}>Menu Element 1</Text>
-      <Text style={styles.menuElement}>Menu Element 2</Text>
-      <Text style={styles.menuElement}>Menu Element 3</Text>
-      <Text style={styles.menuElement}>Menu Element 4</Text>
-      <Text style={styles.menuElement}>Menu Element 1</Text>
-      <Text style={styles.menuElement}>Menu Element 2</Text>
-      <Text style={styles.menuElement}>Menu Element 3</Text>
-      <Text style={styles.menuElement}>Menu Element 4</Text>
-      <Text style={styles.menuElement}>Menu Element 1</Text>
-      <Text style={styles.menuElement}>Menu Element 2</Text>
-      <Text style={styles.menuElement}>Menu Element 3</Text>
-      <Text style={styles.menuElement}>Menu Element 4</Text>
-    </ScrollView>
+    </ScrollView >
   );
 }
 
 const styles = StyleSheet.create({
   scrollViewContainer: {
-    flex: 1,
-  },
-  sideBar: {
-    marginTop: 12,
-    marginBottom: 12,
+    flexGrow: 1,
+    backgroundColor: 'linen',
   },
   h2: {
     fontWeight: 'bold',

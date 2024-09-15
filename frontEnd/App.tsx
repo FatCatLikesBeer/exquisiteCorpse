@@ -2,10 +2,9 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
 import { useState, useEffect } from 'react';
 import PocketBase from 'pocketbase';
-import Credits from './components/Credits';
 
-import Auth from "./components/Auth";
 import Main from './components/Main';
+import Menu from './components/Menu';
 
 const URL = process.env.EXPO_PUBLIC_EC_API_URL;
 const ADMIN_USERANME = process.env.EXPO_PUBLIC_ADMIN_USERNAME;
@@ -17,27 +16,13 @@ const USER2_PASSWORD = process.env.EXPO_PUBLIC_USER2_PASSWORD;
 
 const pb = new PocketBase(URL);
 
-function App() {
-  const [user, setUser] = useState(pb.authStore.model);
-
-  useEffect(() => {
-    console.log(user);
-  }, [user]);
-
+const App = () => {
   return (
-    <View style={styles.container}>
-      {/* user?.id == undefined ? <Auth setUser={setUser} /> : <Text>"App goes here"</Text> */}
-      <Main />
-      <StatusBar style="auto" />
-    </View>
+    <Main />
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#D7D6D4',
-  },
-});
+export default App;
 
 // Colors:
 // #3A2E39    Darkgrey
@@ -51,5 +36,3 @@ const styles = StyleSheet.create({
 // 2E3F37 dark forest green
 // 7E0D04 crimson
 // 809D9F cold slate
-
-export default App;

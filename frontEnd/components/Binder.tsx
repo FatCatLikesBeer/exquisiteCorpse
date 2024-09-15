@@ -6,7 +6,7 @@ import { fetchSheets } from '../functions/fetchSheets';
 const Binder = () => {
   return (
     <ScrollView style={styles.scrollViewContainer}>
-      <Text>Binder Here</Text>
+      <Text style={[styles.sheetContentWrapper, { fontWeight: 'bold' }]}>Binder Here</Text>
       <Text style={styles.sheetContentWrapper}>Binder Sheet 1</Text>
       <Text style={styles.sheetContentWrapper}>Binder Sheet 2</Text>
       <Text style={styles.sheetContentWrapper}>Binder Sheet 3</Text>
@@ -37,8 +37,7 @@ const Binder = () => {
 
 const styles = StyleSheet.create({
   scrollViewContainer: {
-    flex: 3,
-    minWidth: window.innerWidth,
+    flexGrow: 8,
   },
   sheetContentWrapper: {
     padding: 20,

@@ -1,23 +1,27 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, TextInput, Pressable } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
 import Binder from './Binder';
 import Menu from './Menu';
 
 const Main = () => {
   return (
-    <View style={styles.mainContainer}>
+    <SafeAreaView style={[styles.flexContainer]}>
+      <StatusBar style="auto" />
       <Menu />
       <Binder />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  mainContainer: {
-    flex: 1,
-    display: 'flex',
+  flexContainer: {
     flexDirection: 'row',
+  },
+  menu: {
+    position: 'absolute',
+    bottom: 0,
   }
 });
 
