@@ -1,10 +1,9 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, TextInput } from 'react-native';
-import { useState, useEffect } from 'react';
+import React from 'react';
+import { Text, View, SafeAreaView } from 'react-native';
 import PocketBase from 'pocketbase';
 
 import Main from './components/Main';
-import Menu from './components/Menu';
+import Temp from './components/Temp';
 
 const URL = process.env.EXPO_PUBLIC_EC_API_URL;
 const ADMIN_USERANME = process.env.EXPO_PUBLIC_ADMIN_USERNAME;
@@ -18,7 +17,9 @@ const pb = new PocketBase(URL);
 
 const App = () => {
   return (
-    <Main />
+    <View style={{ width: "100%" }}>
+      <Main />
+    </View>
   );
 }
 

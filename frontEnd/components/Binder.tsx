@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View, Button, TextInput, Pressable } from 'react-native';
+import { ScrollView, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 
 import { fetchSheets } from '../functions/fetchSheets';
 import SheetContainer from './SheetContainer';
@@ -21,16 +21,18 @@ const Binder = () => {
 
   return (
     <ScrollView style={styles.scrollViewContainer}>
-      {sheets.length == 0 ? <Text>Loading...</Text> : sheets.map((sheet) => { return <SheetContainer sheet={sheet} /> })}
+      {sheets.length == 0 ? <ActivityIndicator size="large" color="linen" /> : sheets.map((sheet) => { return <SheetContainer key={sheet[3].id} sheet={sheet} /> })}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   scrollViewContainer: {
-    flexGrow: 8,
+    flex: 8,
+    paddingLeft: 10,
+    paddingRight: 10,
   },
-  foldWrapper: {
+  sheetContainer: {
   }
 });
 

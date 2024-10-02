@@ -7,7 +7,7 @@ import Menu from './Menu';
 
 const Main = () => {
   return (
-    <SafeAreaView style={[styles.flexContainer]}>
+    <SafeAreaView>
       <StatusBar style="auto" />
       <Menu />
       <Binder />
@@ -18,6 +18,7 @@ const Main = () => {
 const styles = StyleSheet.create({
   flexContainer: {
     flexDirection: 'row',
+    flex: 1,
   },
   menu: {
     position: 'absolute',

@@ -6,7 +6,9 @@ import FoldContainer from './FoldContainer';
 function SheetContainer({ sheet }) {
   return (
     <View style={styles.container}>
-      {sheet.map((fold) => { return <FoldContainer fold={fold} /> })}
+      <Text>
+        {sheet.map((fold) => { return <FoldContainer key={fold.id} fold={fold} /> })}
+      </Text>
     </View>
   );
 }
@@ -15,6 +17,7 @@ const styles = StyleSheet.create({
   container: {
     borderWidth: 1,
     borderColor: 'salmon',
+    marginTop: 16,
   },
 });
 

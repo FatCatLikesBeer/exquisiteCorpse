@@ -1,19 +1,31 @@
-import React from 'react';
-import { ScrollView, StyleSheet, Text, View, Button, TextInput, Pressable } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, Animated } from 'react-native';
 
 function FoldContainer({ fold }) {
+  const [textIsPressed, setTextIsPressed] = useState(false);
+
+  const handlePress = () => {
+    setTextIsPressed(!textIsPressed);
+    console.log("Open info modal?");
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>{fold.content}</Text>
-    </View>
+    <Text
+      style={[styles.text, textIsPressed && styles.pressedText]}
+      onPress={handlePress}>
+      {fold.content}
+    </Text>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    borderWidth: 1,
-    borderColor: 'salmon',
+  text: {
+    color: "black",
   },
+  pressedText: {
+    color: "red",
+    opacity: 0.6,
+  }
 });
 
 export default FoldContainer;
