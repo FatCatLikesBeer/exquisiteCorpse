@@ -13,6 +13,9 @@ const Binder = () => {
       console.log(result);
       let carbonCopy = [...sheets];
       carbonCopy.push(result);
+      carbonCopy = [...carbonCopy, ...carbonCopy];
+      carbonCopy = [...carbonCopy, ...carbonCopy];
+      carbonCopy = [...carbonCopy, ...carbonCopy];
       setSheets(carbonCopy);
     };
 
@@ -20,15 +23,17 @@ const Binder = () => {
   }, []); // This array needs to be empty so it runs only once...
 
   return (
-    <ScrollView style={styles.scrollViewContainer}>
-      {sheets.length == 0 ? <ActivityIndicator size="large" color="linen" /> : sheets.map((sheet) => { return <SheetContainer key={sheet[3].id} sheet={sheet} /> })}
+    <ScrollView>
+      <View style={styles.scrollViewContainer}>
+        {sheets.length == 0 ? <ActivityIndicator size="large" color="linen" /> : sheets.map((sheet) => { return <SheetContainer key={sheet[3].id} sheet={sheet} /> })}
+      </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   scrollViewContainer: {
-    flex: 8,
+    flex: 1,
     paddingLeft: 10,
     paddingRight: 10,
   },

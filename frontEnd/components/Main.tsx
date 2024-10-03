@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 
@@ -7,7 +7,7 @@ import Menu from './Menu';
 
 const Main = () => {
   return (
-    <SafeAreaView>
+    <SafeAreaView style={styles.flexContainer}>
       <StatusBar style="auto" />
       <Menu />
       <Binder />
@@ -17,13 +17,9 @@ const Main = () => {
 
 const styles = StyleSheet.create({
   flexContainer: {
-    flexDirection: 'row',
     flex: 1,
+    flexDirection: 'row',
   },
-  menu: {
-    position: 'absolute',
-    bottom: 0,
-  }
 });
 
 export default Main;

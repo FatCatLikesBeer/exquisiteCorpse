@@ -12,9 +12,7 @@ function FoldContainer({ fold }) {
   return (
     <Text
       style={[styles.text, textIsPressed && styles.pressedText]}
-      onPress={handlePress}>
-      {fold.content}
-    </Text>
+      onPress={handlePress}>{fold.content} </Text>
   );
 }
 

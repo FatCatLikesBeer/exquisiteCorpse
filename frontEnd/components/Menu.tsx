@@ -13,8 +13,8 @@ const Menu = () => {
   }, [width])
 
   return (
-    <ScrollView style={styles.scrollViewContainer}>
-      <Text style={styles.h2}>App Title</Text>
+    <View style={styles.scrollViewContainer}>
+      <Text style={styles.h2}>Exquisite Corpse</Text>
       <Text style={styles.menuElement}>Read</Text>
       <Text style={styles.menuElement}>Write</Text>
       <Text style={styles.menuElement}>Profile</Text>
@@ -22,15 +22,15 @@ const Menu = () => {
       <Text style={styles.menuElement}>About</Text>
       <Text style={styles.menuElement}>Credits</Text>
       <Text style={styles.menuElement}>Get The App</Text>
-    </ScrollView >
+    </View >
   );
 }
 
 const styles = StyleSheet.create({
   scrollViewContainer: {
-    flex: 1,
-    width: 130,
+    width: 200,
     backgroundColor: 'linen',
+    padding: 8,
   },
   h2: {
     fontWeight: 'bold',
