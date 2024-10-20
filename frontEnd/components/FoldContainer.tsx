@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { StyleSheet, Text, Animated } from 'react-native';
+import { FontOptionsContext } from './context/FontOptions';
 
 function FoldContainer({ fold }) {
   const [textIsPressed, setTextIsPressed] = useState(false);
+  const fontOptions = useContext(FontOptionsContext);
 
   const handlePress = () => {
     setTextIsPressed(!textIsPressed);
-    console.log("Open info modal?");
+    if (textIsPressed == false) { console.log("Open info modal?") }
   }
 
   return (
     <Text
-      style={[styles.text, textIsPressed && styles.pressedText]}
+      style={[{ color: fontOptions }, textIsPressed && styles.pressedText]}
       onPress={handlePress}>{fold.content} </Text>
   );
 }

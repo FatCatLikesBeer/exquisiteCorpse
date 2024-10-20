@@ -1,23 +1,78 @@
-import React from "react";
-import { Text, View, SafeAreaView, StyleSheet } from 'react-native';
+import React, { useContext, createContext, useState, useEffect } from "react";
+import { Text, View, SafeAreaView, StyleSheet, ScrollView, StatusBar } from 'react-native';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-const Temp = () => {
+import Binder from './Binder';
+
+const WriteScreen = () => {
   return (
-    <SafeAreaView>
-      <Text style={styles.text}>
-        Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus
-      </Text>
-    </SafeAreaView>
+    <View style={styles.homeScreen}>
+      <Text>Write</Text>
+    </View>
   );
 }
 
+const SettingsScreen = () => {
+  return (
+    <View style={styles.homeScreen}>
+      <Text>Settings</Text>
+    </View>
+  )
+}
+
+const ReadScreen = () => {
+  return (
+    <View style={styles.homeScreen}>
+      <Text>ReadScreen</Text>
+    </View>
+  )
+}
+
+const Temp = () => {
+  const MyDefaultTheme = {
+    ...DefaultTheme,
+    colors: {
+      ...DefaultTheme.colors,
+      primary: '#3A2E39',
+    }
+  }
+
+  const MyDarkTheme = {
+    ...DarkTheme,
+    colors: {
+      ...DarkTheme.colors,
+      primary: '#3A2E39',
+    }
+  }
+
+  return (
+    <NavigationContainer theme={MyDarkTheme}>
+      <StatusBar />
+      <Tab.Navigator>
+        <Tab.Screen name="Read" component={Binder} options={{
+          headerShadowVisible: false,
+        }} />
+        <Tab.Screen name="Write" component={WriteScreen} />
+        <Tab.Screen name="Settings" component={SettingsScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}
+
+const Tab = createBottomTabNavigator();
+
 const styles = StyleSheet.create({
-  text: {
-    color: "salmon",
+  homeScreen: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
-  container: {
-    width: "100%",
-  },
-})
+  sheet: {
+    paddingTop: 12,
+    paddingLeft: 12,
+    paddingRight: 12,
+  }
+});
 
 export default Temp;

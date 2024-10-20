@@ -42,4 +42,6 @@ const styles = StyleSheet.create({
   }
 });
 
+const mobileStyles = StyleSheet.create({});
+
 export default Menu;

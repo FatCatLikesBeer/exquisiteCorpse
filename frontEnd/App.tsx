@@ -1,8 +1,7 @@
 import React from 'react';
-import { Text, View, SafeAreaView } from 'react-native';
+import { Text, View, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import PocketBase from 'pocketbase';
 
-import Main from './components/Main';
 import Temp from './components/Temp';
 
 const URL = process.env.EXPO_PUBLIC_EC_API_URL;
@@ -17,11 +16,18 @@ const pb = new PocketBase(URL);
 
 const App = () => {
   return (
-    <View style={{ width: "100%" }}>
-      <Main />
-    </View>
+    <Temp />
   );
 }
+
+const styles = StyleSheet.create({
+  app: {
+    flex: 1,
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
+  }
+});
 
 export default App;
 

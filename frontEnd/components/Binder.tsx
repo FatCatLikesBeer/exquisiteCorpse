@@ -4,6 +4,14 @@ import { ScrollView, StyleSheet, Text, View, ActivityIndicator } from 'react-nat
 import { fetchSheets } from '../functions/fetchSheets';
 import SheetContainer from './SheetContainer';
 
+function keyUniquizer(key: string) {
+  const range: number = 10;
+  let result = key;
+  result = result + Math.floor(Math.random() * range).toString();
+  result = result + Math.floor(Math.random() * range).toString();
+  return result;
+}
+
 const Binder = () => {
   const [sheets, setSheets] = useState([]);
 
@@ -24,8 +32,11 @@ const Binder = () => {
 
   return (
     <ScrollView>
-      <View style={styles.scrollViewContainer}>
-        {sheets.length == 0 ? <ActivityIndicator size="large" color="linen" /> : sheets.map((sheet) => { return <SheetContainer key={sheet[3].id} sheet={sheet} /> })}
+      <View>
+        {sheets.length == 0 ? <ActivityIndicator size="large" color="linen" /> : sheets.map((sheet) => {
+          let generatedKey = keyUniquizer(sheet[3].id);
+          return <SheetContainer key={generatedKey} sheet={sheet} />
+        })}
       </View>
     </ScrollView>
   );
@@ -37,8 +48,6 @@ const styles = StyleSheet.create({
     paddingLeft: 10,
     paddingRight: 10,
   },
-  sheetContainer: {
-  }
 });
 
 export default Binder;
