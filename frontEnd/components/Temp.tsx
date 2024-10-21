@@ -4,6 +4,9 @@ import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import Binder from './Binder';
+import Settings from './Settings';
+
+import { LightModeContext } from "./context/LightModeContext";
 
 const WriteScreen = () => {
   return (
@@ -13,28 +16,22 @@ const WriteScreen = () => {
   );
 }
 
-const SettingsScreen = () => {
-  return (
-    <View style={styles.homeScreen}>
-      <Text>Settings</Text>
-    </View>
-  )
-}
-
-const ReadScreen = () => {
-  return (
-    <View style={styles.homeScreen}>
-      <Text>ReadScreen</Text>
-    </View>
-  )
-}
-
 const Temp = () => {
+  const [theme, setTheme] = useState('light');
+  const toggleTheme = () => {
+    if (theme == 'light') {
+      setTheme('dark');
+    } else if (theme == 'dark') {
+      setTheme('light');
+    }
+  }
+
   const MyDefaultTheme = {
     ...DefaultTheme,
     colors: {
       ...DefaultTheme.colors,
       primary: '#3A2E39',
+      text: 'black',
     }
   }
 
@@ -43,20 +40,23 @@ const Temp = () => {
     colors: {
       ...DarkTheme.colors,
       primary: '#3A2E39',
+      text: 'white',
     }
   }
 
   return (
-    <NavigationContainer theme={MyDarkTheme}>
-      <StatusBar />
-      <Tab.Navigator>
-        <Tab.Screen name="Read" component={Binder} options={{
-          headerShadowVisible: false,
-        }} />
-        <Tab.Screen name="Write" component={WriteScreen} />
-        <Tab.Screen name="Settings" component={SettingsScreen} />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <LightModeContext.Provider value={{ theme, toggleTheme }}>
+      <NavigationContainer theme={theme == 'light' ? MyDefaultTheme : MyDarkTheme}>
+        <StatusBar />
+        <Tab.Navigator>
+          <Tab.Screen name="Read" component={Binder} options={{
+            headerShadowVisible: false,
+          }} />
+          <Tab.Screen name="Write" component={WriteScreen} />
+          <Tab.Screen name="Settings" component={Settings} />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </LightModeContext.Provider>
   );
 }
 

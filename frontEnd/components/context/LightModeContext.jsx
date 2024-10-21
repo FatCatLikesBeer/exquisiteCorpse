@@ -18,4 +18,4 @@ import React, { createContext, useState } from "react";
 //   }
 // }
 
-export const FontOptionsContext = createContext('dodgerblue');
+export const LightModeContext = createContext();
