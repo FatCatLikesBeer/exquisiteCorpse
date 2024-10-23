@@ -1,5 +1,5 @@
 import React, { useContext, createContext, useState, useEffect } from "react";
-import { Text, View, SafeAreaView, StyleSheet, ScrollView, StatusBar } from 'react-native';
+import { Text, View, SafeAreaView, StyleSheet, ScrollView, StatusBar, Appearance } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
@@ -17,7 +17,15 @@ const WriteScreen = () => {
 }
 
 const Temp = () => {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState(Appearance.getColorScheme());
+  useEffect(() => {
+    const subscription = Appearance.addChangeListener(({ colorScheme }) => {
+      setTheme(colorScheme);
+    });
+
+    return () => subscription.remove();
+  }, []);
+
   const toggleTheme = () => {
     if (theme == 'light') {
       setTheme('dark');

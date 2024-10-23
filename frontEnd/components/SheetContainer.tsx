@@ -7,6 +7,9 @@ function keyUniquizer(key: string) {
   let result = key;
   result = result + Math.floor(Math.random() * 10).toString();
   result = result + Math.floor(Math.random() * 10).toString();
+  result = result + Math.floor(Math.random() * 10).toString();
+  result = result + Math.floor(Math.random() * 10).toString();
+  result = result + Math.floor(Math.random() * 10).toString();
   return result;
 }
 

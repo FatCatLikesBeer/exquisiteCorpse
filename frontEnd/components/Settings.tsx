@@ -12,7 +12,7 @@ const Settings = () => {
     <View style={styles.homeScreen}>
       <Text style={{ 'color': textColor }}>Settings go here</Text>
       <Button
-        title={theme == 'light' ? "Light" : "Dark"}
+        title={theme == 'light' ? "Switch to Dark Theme" : "Switch to Light Theme"}
         onPress={toggleTheme}
       />
     </View>
