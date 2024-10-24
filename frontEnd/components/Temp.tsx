@@ -2,11 +2,16 @@ import React, { useContext, createContext, useState, useEffect } from "react";
 import { Text, View, SafeAreaView, StyleSheet, ScrollView, StatusBar, Appearance } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Binder from './Binder';
 import Settings from './Settings';
 
 import { LightModeContext } from "./context/LightModeContext";
+
+const AUTO_THEME_SETTING_KEY = 'auto_theme_setting';
+const AUTO_THEME_LIGHT_MODE_KEY = 'auto_theme_light_mode';
+const MANUAL_THEME_LIGHT_MODE_KEY = 'manual_theme_light_mode';
 
 const WriteScreen = () => {
   return (
@@ -18,6 +23,10 @@ const WriteScreen = () => {
 
 const Temp = () => {
   const [theme, setTheme] = useState(Appearance.getColorScheme());
+  const [useAutoThemeSetting, setUseAutoThemeSetting] = useState(false);
+  const [useAutoLightMode, setUseAutoLightMode] = useState(true);
+  const [useManualLightMode, setUseManualLightMode] = useState(true);
+
   useEffect(() => {
     const subscription = Appearance.addChangeListener(({ colorScheme }) => {
       setTheme(colorScheme);
@@ -51,6 +60,62 @@ const Temp = () => {
       text: 'white',
     }
   }
+
+  const loadThemeSettingsFromAsyncStorage = async () => {
+    try {
+      const storedAutoThemeSetting = JSON.parse(await AsyncStorage.getItem(AUTO_THEME_SETTING_KEY));
+      const storedAutoThemeLightMode = JSON.parse(await AsyncStorage.getItem(AUTO_THEME_LIGHT_MODE_KEY));
+      const storedManualThemeLightMode = JSON.parse(await AsyncStorage.getItem(MANUAL_THEME_LIGHT_MODE_KEY));
+
+      if (storedAutoThemeSetting) {
+        setUseAutoThemeSetting(storedAutoThemeSetting);
+      }
+
+      if (storedAutoThemeLightMode) {
+        setUseAutoLightMode(storedAutoThemeLightMode);
+      }
+
+      if (storedManualThemeLightMode) {
+        setUseManualLightMode(storedManualThemeLightMode);
+      }
+
+      console.log('auto theme setting', storedAutoThemeSetting);
+      console.log('auto theme light mode', storedAutoThemeLightMode);
+      console.log('manual theme light mode', storedManualThemeLightMode);
+    } catch (error) {
+      console.error('Failed to load theme values from AsyncStorage', error);
+    }
+  }
+
+  const saveAutoThemeSetting = async (autoThemeSettingValue: boolean) => {
+    try {
+      await AsyncStorage.setItem(AUTO_THEME_SETTING_KEY, JSON.stringify(autoThemeSettingValue))
+    } catch (error) {
+      console.error('Failed to save auto theme setting:', error);
+    }
+  }
+
+  const saveAutoThemeLightMode = async (autoThemeLightMode: boolean) => {
+    try {
+      await AsyncStorage.setItem(AUTO_THEME_LIGHT_MODE_KEY, JSON.stringify(autoThemeLightMode))
+    } catch (error) {
+      console.error('Failed to save auto theme setting:', error);
+    }
+  }
+
+  const saveManualThemeLightMode = async (manualThemeLightMode: boolean) => {
+    try {
+      await AsyncStorage.setItem(MANUAL_THEME_LIGHT_MODE_KEY, JSON.stringify(manualThemeLightMode))
+    } catch (error) {
+      console.error('Failed to save auto theme setting:', error);
+    }
+  }
+
+  const saveSettingsBundle = { saveAutoThemeSetting, saveAutoThemeLightMode, saveManualThemeLightMode };
+
+  useEffect(() => {
+    loadThemeSettingsFromAsyncStorage();
+  }, []);
 
   return (
     <LightModeContext.Provider value={{ theme, toggleTheme }}>

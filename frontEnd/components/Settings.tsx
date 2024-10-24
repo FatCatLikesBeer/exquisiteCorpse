@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Text, View, StyleSheet, ScrollView, Button } from 'react-native';
+import { Text, View, StyleSheet, ScrollView, Button, Switch } from 'react-native';
 
 import { LightModeContext } from "./context/LightModeContext";
 
@@ -10,10 +10,16 @@ const Settings = () => {
 
   return (
     <View style={styles.homeScreen}>
-      <Text style={{ 'color': textColor }}>Settings go here</Text>
+      <Text style={{ 'color': textColor, fontSize: 20 }}>Theme Settings</Text>
+      <Text style={{ 'color': textColor }}>Auto set to Device Default</Text>
+      <Switch
+        onValueChange={toggleTheme}
+        value={theme == 'light'}
+      />
       <Button
-        title={theme == 'light' ? "Switch to Dark Theme" : "Switch to Light Theme"}
+        title={`Use ${theme == "light" ? 'Dark' : 'Light'} Theme`}
         onPress={toggleTheme}
+        disabled={true}
       />
     </View>
   );
