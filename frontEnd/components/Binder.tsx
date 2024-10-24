@@ -20,7 +20,6 @@ const Binder = () => {
   useEffect(() => {
     async function getSheets() {
       const result = await fetchSheets();
-      console.log(result);
       let carbonCopy = [...sheets];
       carbonCopy.push(result);
       carbonCopy = [...carbonCopy, ...carbonCopy];
