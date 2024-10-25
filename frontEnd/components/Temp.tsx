@@ -22,18 +22,14 @@ const WriteScreen = () => {
 
 const Temp = () => {
   const [theme, setTheme] = useState(Appearance.getColorScheme());
-  const [useAutoThemeSetting, setUseAutoThemeSetting] = useState(false);
-  const [useAutoLightMode, setUseAutoLightMode] = useState(Appearance.getColorScheme() == 'light');
-  const [useManualLightMode, setUseManualLightMode] = useState(true);
-
 
   useEffect(() => {
-    const subscription = Appearance.addChangeListener(({ colorScheme }) => {
-      setUseAutoLightMode(colorScheme == 'light');
+    const subscription = Appearance.addChangeListener(() => {
+      setTheme(Appearance.getColorScheme());
     });
 
     return () => subscription.remove();
-  }, []);
+  }, [])
 
   const toggleTheme = () => {
     if (theme == 'light') {
@@ -60,52 +56,9 @@ const Temp = () => {
       text: 'white',
     }
   }
-
-  const loadThemeSettingsFromAsyncStorage = async () => {
-    try {
-      const storedAutoThemeSetting = JSON.parse(await AsyncStorage.getItem(AUTO_THEME_SETTING_KEY));
-      const storedManualThemeLightMode = JSON.parse(await AsyncStorage.getItem(MANUAL_THEME_LIGHT_MODE_KEY));
-
-      if (storedAutoThemeSetting) {
-        setUseAutoThemeSetting(storedAutoThemeSetting);
-      }
-
-      if (storedManualThemeLightMode) {
-        setUseManualLightMode(storedManualThemeLightMode);
-      }
-    } catch (error) {
-      console.error('Failed to load theme values from AsyncStorage', error);
-    }
-  }
-
-  const saveAutoThemeSetting = async (autoThemeSettingValue: boolean) => {
-    try {
-      await AsyncStorage.setItem(AUTO_THEME_SETTING_KEY, JSON.stringify(autoThemeSettingValue))
-    } catch (error) {
-      console.error('Failed to save auto theme setting:', error);
-    }
-  }
-
-  const saveManualThemeLightMode = async (manualThemeLightMode: boolean) => {
-    try {
-      await AsyncStorage.setItem(MANUAL_THEME_LIGHT_MODE_KEY, JSON.stringify(manualThemeLightMode))
-    } catch (error) {
-      console.error('Failed to save auto theme setting:', error);
-    }
-  }
-
-  const saveSettingsBundle = { saveAutoThemeSetting, saveManualThemeLightMode };
-
-  useEffect(() => {
-    loadThemeSettingsFromAsyncStorage();
-    console.log(useAutoThemeSetting);
-    console.log(useAutoLightMode);
-    console.log(useManualLightMode);
-  }, []);
-
   return (
     <LightModeContext.Provider value={{ theme, toggleTheme }}>
-      <NavigationContainer theme={useAutoThemeSetting ? useAutoLightMode ? MyDefaultTheme : MyDarkTheme : useManualLightMode ? MyDefaultTheme : MyDarkTheme}>
+      <NavigationContainer theme={theme == 'light' ? MyDefaultTheme : MyDarkTheme}>
         <StatusBar />
         <Tab.Navigator>
           <Tab.Screen name="Read" component={Binder} options={{
