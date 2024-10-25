@@ -19,7 +19,6 @@ const Settings = () => {
       <Button
         title={`Use ${theme == "light" ? 'Dark' : 'Light'} Theme`}
         onPress={toggleTheme}
-        disabled={true}
       />
     </View>
   );

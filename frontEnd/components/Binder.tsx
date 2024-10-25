@@ -29,7 +29,7 @@ const Binder = () => {
     };
 
     getSheets();
-  }, []); // This array needs to be empty so it runs only once...
+  }, []); // This array needs to be empty so it runs only once on load...
 
   return (
     <ScrollView>
