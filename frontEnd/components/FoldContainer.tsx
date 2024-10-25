@@ -5,7 +5,7 @@ import { LightModeContext } from "./context/LightModeContext";
 
 function FoldContainer({ fold }) {
   const [textIsPressed, setTextIsPressed] = useState(false);
-  const { theme, toggleTheme } = useContext(LightModeContext);
+  const { theme } = useContext(LightModeContext);
 
   const handlePress = () => {
     setTextIsPressed(!textIsPressed);

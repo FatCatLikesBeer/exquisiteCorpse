@@ -9,9 +9,6 @@ import Settings from './Settings';
 
 import { LightModeContext } from "./context/LightModeContext";
 
-const AUTO_THEME_SETTING_KEY = 'auto_theme_setting';
-const MANUAL_THEME_LIGHT_MODE_KEY = 'manual_theme_light_mode';
-
 const WriteScreen = () => {
   return (
     <View style={styles.homeScreen}>
@@ -22,10 +19,11 @@ const WriteScreen = () => {
 
 const Temp = () => {
   const [theme, setTheme] = useState(Appearance.getColorScheme());
+  const [themeSelection, setThemeSelection] = useState('light');
 
   useEffect(() => {
-    const subscription = Appearance.addChangeListener(() => {
-      setTheme(Appearance.getColorScheme());
+    const subscription = Appearance.addChangeListener(({ colorScheme }) => {
+      setTheme(colorScheme);
     });
 
     return () => subscription.remove();
@@ -56,6 +54,7 @@ const Temp = () => {
       text: 'white',
     }
   }
+
   return (
     <LightModeContext.Provider value={{ theme, toggleTheme }}>
       <NavigationContainer theme={theme == 'light' ? MyDefaultTheme : MyDarkTheme}>
