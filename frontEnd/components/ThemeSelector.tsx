@@ -4,13 +4,11 @@ import { View, Text, StyleSheet } from 'react-native';
 import { LightModeContext } from "./context/LightModeContext";
 
 const ThemeSelector = () => {
-  const { setActivityMonitor, theme, setTheme } = useContext(LightModeContext);
+  const { theme, setTheme } = useContext(LightModeContext);
 
   // I've never seen this syntax before. Thanks chatGPT
   const themeSelection = (stuff) => () => {
     setTheme(stuff);
-    // Whenever this gets clicked, this should effect the useEffect option in the Temp component, no matter what,
-    setActivityMonitor(Math.floor(Math.random() * 1000000));
   };
 
   return (

@@ -12,7 +12,7 @@ function FoldContainer({ fold }) {
     if (textIsPressed == false) { console.log("Open info modal?") }
   }
 
-  const textColor = parsedTheme == 'light' ? "dark" : "white";
+  const textColor = parsedTheme == 'light' ? "black" : "white";
 
   return (
     <Text

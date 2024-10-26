@@ -22,10 +22,8 @@ const WriteScreen = () => {
 const Temp = () => {
   const [theme, setTheme] = useState<themeType>('light');
   const [parsedTheme, setParsedTheme] = useState('dark');
-  const [activityMonitor, setActivityMonitor] = useState(0); // This is used to detect that settings have changed
 
   useEffect(() => {
-    console.log(activityMonitor);
     setParsedTheme(themeParser(theme));
     if (theme == 'auto') {
       const subscription = Appearance.addChangeListener(({ colorScheme }) => {
@@ -33,7 +31,7 @@ const Temp = () => {
       });
       return () => subscription.remove();
     }
-  }, [activityMonitor])
+  }, [theme])
 
   const MyDefaultTheme = {
     ...DefaultTheme,
@@ -54,13 +52,11 @@ const Temp = () => {
   }
 
   return (
-    <LightModeContext.Provider value={{ setTheme, theme, parsedTheme, setActivityMonitor }}>
+    <LightModeContext.Provider value={{ setTheme, theme, parsedTheme }}>
       <NavigationContainer theme={parsedTheme == 'light' ? MyDefaultTheme : MyDarkTheme}>
         <StatusBar />
         <Tab.Navigator>
-          <Tab.Screen name="Read" component={Binder} options={{
-            headerShadowVisible: false,
-          }} />
+          <Tab.Screen name="Read" component={Binder} />
           <Tab.Screen name="Write" component={WriteScreen} />
           <Tab.Screen name="Settings" component={Settings} />
         </Tab.Navigator>

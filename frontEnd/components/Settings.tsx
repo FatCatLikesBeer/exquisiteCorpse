@@ -7,7 +7,7 @@ import ThemeSelector from "./ThemeSelector";
 const Settings = () => {
   const { parsedTheme } = useContext(LightModeContext);
 
-  const textColor = parsedTheme == 'light' ? "dark" : "white";
+  const textColor = parsedTheme == 'light' ? "black" : "white";
 
   return (
     <View style={styles.homeScreen}>
