@@ -1,13 +1,23 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, StyleSheet } from 'react-native';
 
-const ThemeSelector = (values) => {
-  const { theme, setTheme } = values;
+import { LightModeContext } from "./context/LightModeContext";
+
+const ThemeSelector = () => {
+  const { setActivityMonitor, theme, setTheme } = useContext(LightModeContext);
+
+  // I've never seen this syntax before. Thanks chatGPT
+  const themeSelection = (stuff) => () => {
+    setTheme(stuff);
+    // Whenever this gets clicked, this should effect the useEffect option in the Temp component, no matter what,
+    setActivityMonitor(Math.floor(Math.random() * 1000000));
+  };
+
   return (
     <View style={styles.constainer}>
-      <Text>Light</Text>
-      <Text>Dark</Text>
-      <Text>Auto</Text>
+      <Text onPress={themeSelection('light')} style={theme == 'light' && styles.option}>Light</Text>
+      <Text onPress={themeSelection('dark')} style={theme == 'dark' && styles.option}>Dark</Text>
+      <Text onPress={themeSelection('auto')} style={theme == 'auto' && styles.option}>Auto</Text>
     </View>
   );
 }
@@ -25,6 +35,8 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
   },
   option: {
+    backgroundColor: 'black',
+    color: 'pink',
   },
   selection: {
   }

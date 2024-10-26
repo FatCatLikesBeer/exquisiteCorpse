@@ -6,6 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Binder from './Binder';
 import Settings from './Settings';
+import themeParser from "../functions/themeParser";
+import type { themeType } from '../functions/themeParser';
 
 import { LightModeContext } from "./context/LightModeContext";
 
@@ -18,25 +20,20 @@ const WriteScreen = () => {
 }
 
 const Temp = () => {
-  const [theme, setTheme] = useState('auto');
+  const [theme, setTheme] = useState<themeType>('light');
+  const [parsedTheme, setParsedTheme] = useState('dark');
+  const [activityMonitor, setActivityMonitor] = useState(0); // This is used to detect that settings have changed
 
   useEffect(() => {
+    console.log(activityMonitor);
+    setParsedTheme(themeParser(theme));
     if (theme == 'auto') {
       const subscription = Appearance.addChangeListener(({ colorScheme }) => {
-        setTheme(colorScheme);
+        setParsedTheme(colorScheme);
       });
-
       return () => subscription.remove();
     }
-  }, [theme])
-
-  // const toggleTheme = () => {
-  //   if (theme == 'light') {
-  //     setTheme('dark');
-  //   } else if (theme == 'dark') {
-  //     setTheme('light');
-  //   }
-  // }
+  }, [activityMonitor])
 
   const MyDefaultTheme = {
     ...DefaultTheme,
@@ -57,8 +54,8 @@ const Temp = () => {
   }
 
   return (
-    <LightModeContext.Provider value={{ theme, setTheme }}>
-      <NavigationContainer theme={theme == 'light' ? MyDefaultTheme : MyDarkTheme}>
+    <LightModeContext.Provider value={{ setTheme, theme, parsedTheme, setActivityMonitor }}>
+      <NavigationContainer theme={parsedTheme == 'light' ? MyDefaultTheme : MyDarkTheme}>
         <StatusBar />
         <Tab.Navigator>
           <Tab.Screen name="Read" component={Binder} options={{

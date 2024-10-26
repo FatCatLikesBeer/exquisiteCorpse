@@ -5,14 +5,14 @@ import { LightModeContext } from "./context/LightModeContext";
 
 function FoldContainer({ fold }) {
   const [textIsPressed, setTextIsPressed] = useState(false);
-  const { theme } = useContext(LightModeContext);
+  const { parsedTheme } = useContext(LightModeContext);
 
   const handlePress = () => {
     setTextIsPressed(!textIsPressed);
     if (textIsPressed == false) { console.log("Open info modal?") }
   }
 
-  const textColor = theme == 'light' ? "black" : "white";
+  const textColor = parsedTheme == 'light' ? "dark" : "white";
 
   return (
     <Text
