@@ -1,7 +1,8 @@
 import React from "react";
 import { View, Text, StyleSheet } from 'react-native';
 
-const ThemeSelector = () => {
+const ThemeSelector = (values) => {
+  const { theme, setTheme } = values;
   return (
     <View style={styles.constainer}>
       <Text>Light</Text>

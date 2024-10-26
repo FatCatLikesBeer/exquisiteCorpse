@@ -18,24 +18,25 @@ const WriteScreen = () => {
 }
 
 const Temp = () => {
-  const [theme, setTheme] = useState(Appearance.getColorScheme());
-  const [themeSelection, setThemeSelection] = useState('light');
+  const [theme, setTheme] = useState('auto');
 
   useEffect(() => {
-    const subscription = Appearance.addChangeListener(({ colorScheme }) => {
-      setTheme(colorScheme);
-    });
+    if (theme == 'auto') {
+      const subscription = Appearance.addChangeListener(({ colorScheme }) => {
+        setTheme(colorScheme);
+      });
 
-    return () => subscription.remove();
-  }, [])
-
-  const toggleTheme = () => {
-    if (theme == 'light') {
-      setTheme('dark');
-    } else if (theme == 'dark') {
-      setTheme('light');
+      return () => subscription.remove();
     }
-  }
+  }, [theme])
+
+  // const toggleTheme = () => {
+  //   if (theme == 'light') {
+  //     setTheme('dark');
+  //   } else if (theme == 'dark') {
+  //     setTheme('light');
+  //   }
+  // }
 
   const MyDefaultTheme = {
     ...DefaultTheme,
@@ -56,7 +57,7 @@ const Temp = () => {
   }
 
   return (
-    <LightModeContext.Provider value={{ theme, toggleTheme }}>
+    <LightModeContext.Provider value={{ theme, setTheme }}>
       <NavigationContainer theme={theme == 'light' ? MyDefaultTheme : MyDarkTheme}>
         <StatusBar />
         <Tab.Navigator>

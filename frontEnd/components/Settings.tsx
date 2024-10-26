@@ -3,25 +3,32 @@ import { Text, View, StyleSheet, ScrollView, Button, Switch } from 'react-native
 
 import { LightModeContext } from "./context/LightModeContext";
 import ThemeSelector from "./ThemeSelector";
+import themeParser from "../functions/themeParser";
 
 const Settings = () => {
-  const { theme, toggleTheme } = useContext(LightModeContext);
+  const { theme, setTheme } = useContext(LightModeContext);
 
   const textColor = theme == 'light' ? "black" : "white";
 
+  const cycleTheme = () => {
+    if (theme == 'light') { setTheme('auto'); };
+    // if (theme == 'dark') { setTheme('auto'); };
+    if (theme == 'auto') { setTheme('light'); };
+  };
+
   return (
     <View style={styles.homeScreen}>
-      <ThemeSelector />
+      <ThemeSelector values={{ theme, setTheme }} />
       <Text style={{ 'color': textColor, fontSize: 20 }}>Theme Settings</Text>
       <Text style={{ 'color': textColor }}>Auto set to Device Default</Text>
       <Switch
-        onValueChange={toggleTheme}
+        onValueChange={cycleTheme}
         value={theme == 'light'}
       />
       <Text style={{ 'color': textColor }}>Manually Toggle Theme</Text>
       <Button
-        title={`Use ${theme == "light" ? 'Dark' : 'Light'} Theme`}
-        onPress={toggleTheme}
+        title={`Using ${theme} Theme`}
+        onPress={cycleTheme}
         disabled={false}
       />
     </View>
