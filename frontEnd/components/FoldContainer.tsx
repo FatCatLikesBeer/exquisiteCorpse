@@ -12,11 +12,9 @@ function FoldContainer({ fold }) {
     if (textIsPressed == false) { console.log("Open info modal?") }
   }
 
-  const textColor = parsedTheme == 'light' ? "black" : "white";
-
   return (
     <Text
-      style={[{ "color": textColor }, textIsPressed && styles.pressedText]}
+      style={[{ "color": parsedTheme.colors.text }, textIsPressed && styles.pressedText]}
       onPress={handlePress}>{fold.content} </Text>
   );
 }

@@ -4,18 +4,18 @@ import { View, Text, StyleSheet } from 'react-native';
 import { LightModeContext } from "./context/LightModeContext";
 
 const ThemeSelector = () => {
-  const { theme, setTheme } = useContext(LightModeContext);
+  const { userSelectedTheme, setUserSelectedTheme } = useContext(LightModeContext);
 
   // I've never seen this syntax before. Thanks chatGPT
   const themeSelection = (stuff) => () => {
-    setTheme(stuff);
+    setUserSelectedTheme(stuff);
   };
 
   return (
     <View style={styles.constainer}>
-      <Text onPress={themeSelection('light')} style={theme == 'light' && styles.option}>Light</Text>
-      <Text onPress={themeSelection('dark')} style={theme == 'dark' && styles.option}>Dark</Text>
-      <Text onPress={themeSelection('auto')} style={theme == 'auto' && styles.option}>Auto</Text>
+      <Text onPress={themeSelection('light')} style={userSelectedTheme == 'light' && styles.option}>Light</Text>
+      <Text onPress={themeSelection('dark')} style={userSelectedTheme == 'dark' && styles.option}>Dark</Text>
+      <Text onPress={themeSelection('auto')} style={userSelectedTheme == 'auto' && styles.option}>Auto</Text>
     </View>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useContext, createContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Text, View, SafeAreaView, StyleSheet, ScrollView, StatusBar, Appearance } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -12,48 +12,49 @@ import type { themeType } from '../functions/themeParser';
 import { LightModeContext } from "./context/LightModeContext";
 
 const WriteScreen = () => {
+  const { parsedTheme } = useContext(LightModeContext);
   return (
     <View style={styles.homeScreen}>
-      <Text>Write</Text>
+      <Text style={{ 'color': parsedTheme.colors.text }}>Write</Text>
     </View>
   );
 }
 
+const MyDefaultTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#3A2E39',
+    text: 'black',
+  }
+}
+
+const MyDarkTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    primary: '#3A2E39',
+    text: 'white',
+  }
+}
+
 const Temp = () => {
-  const [theme, setTheme] = useState<themeType>('light');
-  const [parsedTheme, setParsedTheme] = useState('dark');
+  const [userSelectedTheme, setUserSelectedTheme] = useState<themeType>('light');
+  const [parsedTheme, setParsedTheme] = useState(MyDefaultTheme);
 
   useEffect(() => {
-    setParsedTheme(themeParser(theme));
-    if (theme == 'auto') {
+    setParsedTheme(themeParser(userSelectedTheme) == 'light' ? MyDefaultTheme : MyDarkTheme);
+    if (userSelectedTheme == 'auto') {
       const subscription = Appearance.addChangeListener(({ colorScheme }) => {
-        setParsedTheme(colorScheme);
+        setParsedTheme(colorScheme == 'light' ? MyDefaultTheme : MyDarkTheme);
       });
       return () => subscription.remove();
     }
-  }, [theme])
-
-  const MyDefaultTheme = {
-    ...DefaultTheme,
-    colors: {
-      ...DefaultTheme.colors,
-      primary: '#3A2E39',
-      text: 'black',
-    }
-  }
-
-  const MyDarkTheme = {
-    ...DarkTheme,
-    colors: {
-      ...DarkTheme.colors,
-      primary: '#3A2E39',
-      text: 'white',
-    }
-  }
+  }, [userSelectedTheme]);
 
   return (
-    <LightModeContext.Provider value={{ setTheme, theme, parsedTheme }}>
-      <NavigationContainer theme={parsedTheme == 'light' ? MyDefaultTheme : MyDarkTheme}>
+    <LightModeContext.Provider value={{ setUserSelectedTheme, userSelectedTheme, parsedTheme }}>
+      <NavigationContainer theme={parsedTheme}>
         <StatusBar />
         <Tab.Navigator>
           <Tab.Screen name="Read" component={Binder} />
