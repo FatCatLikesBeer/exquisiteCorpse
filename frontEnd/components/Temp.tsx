@@ -11,6 +11,15 @@ import type { themeType } from '../functions/themeParser';
 
 import { LightModeContext } from "./context/LightModeContext";
 
+const KEY_USER_STORED_THEME = 'userStoredTheme';
+
+async function getStoredTheme() {
+  const storedTheme = await AsyncStorage.getItem(KEY_USER_STORED_THEME);
+  return storedTheme;
+}
+
+async function setStoredTheme() { }
+
 const WriteScreen = () => {
   const { parsedTheme } = useContext(LightModeContext);
   return (
@@ -43,7 +52,9 @@ const Temp = () => {
   const [parsedTheme, setParsedTheme] = useState(MyDefaultTheme);
 
   useEffect(() => {
+    // Following line sets user selection immediately
     setParsedTheme(themeParser(userSelectedTheme) == 'light' ? MyDefaultTheme : MyDarkTheme);
+    // Following block creates subscription if theme set to auto
     if (userSelectedTheme == 'auto') {
       const subscription = Appearance.addChangeListener(({ colorScheme }) => {
         setParsedTheme(colorScheme == 'light' ? MyDefaultTheme : MyDarkTheme);
