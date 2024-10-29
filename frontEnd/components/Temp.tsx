@@ -13,13 +13,6 @@ import { LightModeContext } from "./context/LightModeContext";
 
 const KEY_USER_STORED_THEME = 'userStoredTheme';
 
-async function getStoredTheme() {
-  const storedTheme = await AsyncStorage.getItem(KEY_USER_STORED_THEME);
-  return storedTheme;
-}
-
-async function setStoredTheme() { }
-
 const WriteScreen = () => {
   const { parsedTheme } = useContext(LightModeContext);
   return (
@@ -51,8 +44,21 @@ const Temp = () => {
   const [userSelectedTheme, setUserSelectedTheme] = useState<themeType>('light');
   const [parsedTheme, setParsedTheme] = useState(MyDefaultTheme);
 
+  // Get stored theme on load
   useEffect(() => {
-    // Following line sets user selection immediately
+    AsyncStorage.getItem(KEY_USER_STORED_THEME)
+      .then((storedTheme: themeType) => {
+        if (!storedTheme) { storedTheme = 'light'; }
+        setUserSelectedTheme(storedTheme);
+        setParsedTheme(themeParser(userSelectedTheme) == 'light' ? MyDefaultTheme : MyDarkTheme);
+      }
+    );
+  }, []);
+
+  // Handle theme AsyncStorage and parsing on change
+  useEffect(() => {
+    // Get stored theme from AsyncStorage and parse it
+    storeSelectedTheme(userSelectedTheme);
     setParsedTheme(themeParser(userSelectedTheme) == 'light' ? MyDefaultTheme : MyDarkTheme);
     // Following block creates subscription if theme set to auto
     if (userSelectedTheme == 'auto') {
@@ -75,6 +81,14 @@ const Temp = () => {
       </NavigationContainer>
     </LightModeContext.Provider>
   );
+}
+
+async function storeSelectedTheme(theme: themeType) {
+  try {
+    await AsyncStorage.setItem(KEY_USER_STORED_THEME, theme);
+  } catch (error) {
+    console.error("Error storing user's prefered theme", error);
+  }
 }
 
 const Tab = createBottomTabNavigator();
