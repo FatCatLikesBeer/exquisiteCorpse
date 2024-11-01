@@ -3,6 +3,7 @@ import { Text, View, SafeAreaView, StyleSheet, ScrollView, StatusBar, Appearance
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFonts } from 'expo-font';
 
 import Binder from './Binder';
 import Settings from './Settings';
@@ -10,6 +11,7 @@ import themeParser from "../functions/themeParser";
 import type { themeType } from '../functions/themeParser';
 
 import { LightModeContext } from "./context/LightModeContext";
+import { FontFamilyContext, FontOptions } from "./FontFamilyContext";
 
 const KEY_USER_STORED_THEME = 'userStoredTheme';
 
@@ -41,6 +43,12 @@ const MyDarkTheme = {
 }
 
 const Temp = () => {
+  const [loaded, error] = useFonts({
+    "BodoniMada": require('../assets/fonts/BodoniModa-VariableFont_opsz,wght.ttf'),
+    "NunitoSans": require('../assets/fonts/NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf'),
+    "Quicksand": require('../assets/fonts/Quicksand-VariableFont_wght.ttf'),
+    "RobotoSerif": require('../assets/fonts/RobotoSerif-VariableFont_GRAD,opsz,wdth,wght.ttf'),
+  });
   const [userSelectedTheme, setUserSelectedTheme] = useState<themeType>('light');
   const [parsedTheme, setParsedTheme] = useState(MyDefaultTheme);
 
@@ -52,7 +60,7 @@ const Temp = () => {
         setUserSelectedTheme(storedTheme);
         setParsedTheme(themeParser(userSelectedTheme) == 'light' ? MyDefaultTheme : MyDarkTheme);
       }
-    );
+      );
   }, []);
 
   // Handle theme AsyncStorage and parsing on change
@@ -71,15 +79,17 @@ const Temp = () => {
 
   return (
     <LightModeContext.Provider value={{ setUserSelectedTheme, userSelectedTheme, parsedTheme }}>
-      <NavigationContainer theme={parsedTheme}>
-        <StatusBar />
-        <Tab.Navigator>
-          <Tab.Screen name="Read" component={Binder} />
-          <Tab.Screen name="Write" component={WriteScreen} />
-          <Tab.Screen name="Settings" component={Settings} />
-        </Tab.Navigator>
-      </NavigationContainer>
-    </LightModeContext.Provider>
+      <FontFamilyContext.Provider value={""}>
+        <NavigationContainer theme={parsedTheme}>
+          <StatusBar />
+          <Tab.Navigator>
+            <Tab.Screen name="Settings" component={Settings} />
+            <Tab.Screen name="Read" component={Binder} />
+            <Tab.Screen name="Write" component={WriteScreen} />
+          </Tab.Navigator>
+        </NavigationContainer>
+      </FontFamilyContext.Provider>
+    </LightModeContext.Provider >
   );
 }
 

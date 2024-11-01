@@ -24,7 +24,18 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "./assets/fonts/BodoniModa-VariableFont_opsz,wght.ttf",
+            "./assets/fonts/NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf",
+            "./assets/fonts/Quicksand-VariableFont_wght.ttf",
+            "./assets/fonts/RobotoSerif-VariableFont_GRAD,opsz,wdth,wght.ttf"
+          ]
+        }
+      ]
     ]
   }
 }

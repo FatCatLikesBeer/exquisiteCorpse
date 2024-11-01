@@ -9,7 +9,7 @@ const Settings = () => {
 
   return (
     <View style={styles.homeScreen}>
-      <Text style={{ 'color': parsedTheme.colors.text, fontSize: 20 }}>Theme Settings</Text>
+      <Text style={[{ fontFamily: "Times New Roman" }, { 'color': parsedTheme.colors.text, fontSize: 20 }]}>Theme Settings</Text>
       <ThemeSelector />
     </View>
   );
