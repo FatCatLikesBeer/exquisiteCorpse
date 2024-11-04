@@ -34,7 +34,7 @@ const Binder = () => {
   return (
     <ScrollView>
       <View>
-        {sheets.length == 0 ? <ActivityIndicator size="large" color="rgv(120, 69, 172)" /> : sheets.map((sheet) => {
+        {sheets.length == 0 ? <ActivityIndicator size="large" color="rgb(120, 69, 172)" /> : sheets.map((sheet) => {
           let generatedKey = keyUniquizer(sheet[3].id);
           return <SheetContainer key={generatedKey} sheet={sheet} />
         })}

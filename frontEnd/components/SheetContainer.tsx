@@ -28,9 +28,7 @@ function SheetContainer({ sheet }) {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 16,
-    marginRight: 16,
-    marginLeft: 16,
+    margin: 16,
   },
 });
 

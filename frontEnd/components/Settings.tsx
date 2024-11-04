@@ -8,22 +8,25 @@ const Settings = () => {
   const { parsedTheme } = useContext(LightModeContext);
 
   return (
-    <View style={styles.homeScreen}>
-      <Text style={[{ 'color': parsedTheme.colors.text, fontSize: 20 }]}>Theme Settings</Text>
+    <View style={styles.settingsScreen}>
+      <Text style={[{ 'color': parsedTheme.colors.text, fontSize: 20 }, styles.text]}>Theme Settings</Text>
       <ThemeSelector />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  homeScreen: {
+  settingsScreen: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     alignContent: 'center',
+    marginRight: 18,
+    marginLeft: 18,
+    marginTop: 14,
   },
   text: {
-    color: 'grey',
+    margin: 12,
   }
 });
 

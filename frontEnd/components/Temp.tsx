@@ -30,7 +30,7 @@ const MyDefaultTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    primary: '#3A2E39',
+    primary: 'rgb(120, 69, 172)',
     text: 'black',
   }
 }
@@ -39,10 +39,12 @@ const MyDarkTheme = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
-    primary: '#3A2E39',
+    primary: 'white',
     text: 'white',
   }
 }
+console.log("light theme navigation", MyDefaultTheme);
+console.log("dark theme navigation ", MyDarkTheme);
 
 const PaperLight = {
   ...MD3LightTheme,
