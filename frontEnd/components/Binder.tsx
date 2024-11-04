@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { ScrollView, StyleSheet, View, ActivityIndicator } from 'react-native';
 
 import { fetchSheets } from '../functions/fetchSheets';
 import SheetContainer from './SheetContainer';
@@ -34,7 +34,7 @@ const Binder = () => {
   return (
     <ScrollView>
       <View>
-        {sheets.length == 0 ? <ActivityIndicator size="large" color="linen" /> : sheets.map((sheet) => {
+        {sheets.length == 0 ? <ActivityIndicator size="large" color="rgv(120, 69, 172)" /> : sheets.map((sheet) => {
           let generatedKey = keyUniquizer(sheet[3].id);
           return <SheetContainer key={generatedKey} sheet={sheet} />
         })}

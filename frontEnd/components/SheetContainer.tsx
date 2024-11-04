@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { ScrollView, StyleSheet, Text, View, Button, TextInput, Pressable } from 'react-native';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 
 import FoldContainer from './FoldContainer';
 
@@ -29,6 +29,8 @@ function SheetContainer({ sheet }) {
 const styles = StyleSheet.create({
   container: {
     marginTop: 16,
+    marginRight: 16,
+    marginLeft: 16,
   },
 });
 

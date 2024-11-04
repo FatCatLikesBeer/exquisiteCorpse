@@ -1,10 +1,11 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Text, View, SafeAreaView, StyleSheet, ScrollView, StatusBar, Appearance } from 'react-native';
+import { Text, View, SafeAreaView, StyleSheet, StatusBar, Appearance } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts } from 'expo-font';
 import { PaperProvider, MD3DarkTheme, MD3LightTheme } from 'react-native-paper';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Binder from './Binder';
 import Settings from './Settings';
@@ -12,7 +13,7 @@ import themeParser from "../functions/themeParser";
 import type { themeType } from '../functions/themeParser';
 
 import { LightModeContext } from "./context/LightModeContext";
-import { FontFamilyContext, FontOptions } from "./FontFamilyContext";
+import { FontFamilyContext, FontOptions } from "./context/FontFamilyContext";
 
 const KEY_USER_STORED_THEME = 'userStoredTheme';
 
@@ -105,10 +106,24 @@ const Temp = () => {
         <FontFamilyContext.Provider value={""}>
           <NavigationContainer theme={parsedTheme}>
             <StatusBar />
-            <Tab.Navigator>
-              <Tab.Screen name="Settings" component={Settings} />
+            <Tab.Navigator
+              screenOptions={({ route }) => ({
+                tabBarIcon: ({ color, size }) => {
+                  const icons = {
+                    Read: "book-open-page-variant",
+                    Write: "file-edit",
+                    Profile: "account",
+                  };
+
+                  return (
+                    <MaterialCommunityIcons name={icons[route.name]} color={color} size={size} />
+                  )
+                }
+              })}
+            >
               <Tab.Screen name="Read" component={Binder} />
               <Tab.Screen name="Write" component={WriteScreen} />
+              <Tab.Screen name="Profile" component={Settings} />
             </Tab.Navigator>
           </NavigationContainer>
         </FontFamilyContext.Provider>

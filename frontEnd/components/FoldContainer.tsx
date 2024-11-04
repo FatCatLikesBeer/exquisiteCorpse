@@ -1,30 +1,39 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { StyleSheet, Text, Animated } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { StyleSheet, Text } from 'react-native';
+import { Modal } from 'react-native-paper';
 
 import { LightModeContext } from "./context/LightModeContext";
+import { FontFamilyContext, FontOptions } from "./context/FontFamilyContext";
 
 function FoldContainer({ fold }) {
   const [textIsPressed, setTextIsPressed] = useState(false);
   const { parsedTheme } = useContext(LightModeContext);
+  const selectedFontFamily = useContext(FontFamilyContext);
 
-  const handlePress = () => {
+  const handleLongPress = () => {
     setTextIsPressed(!textIsPressed);
     if (textIsPressed == false) { console.log("Open info modal?") }
   }
 
+  const handlePress = () => {
+    if (textIsPressed) { setTextIsPressed(!textIsPressed) }
+  }
+
   return (
     <Text
-      style={[{ "color": parsedTheme.colors.text }, textIsPressed && styles.pressedText]}
-      onPress={handlePress}>{fold.content} </Text>
+      style={[{ fontFamily: selectedFontFamily }, styles.text, { "color": parsedTheme.colors.text }, textIsPressed && styles.pressedText]}
+      onLongPress={handleLongPress} onPress={handlePress}>{fold.content} </Text>
   );
 }
 
 const styles = StyleSheet.create({
   text: {
-    color: "white",
+    fontSize: 16,
+    lineHeight: 18,
   },
   pressedText: {
-    color: "red",
+    // color: "rgb(120, 69, 172)",
+    backgroundColor: "rgb(240, 219, 255)",
     opacity: 0.6,
   }
 });
