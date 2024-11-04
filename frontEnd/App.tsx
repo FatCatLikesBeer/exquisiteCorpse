@@ -1,7 +1,6 @@
 import React from 'react';
 import { Text, View, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
 import PocketBase from 'pocketbase';
-import { PaperProvider } from 'react-native-paper';
 
 import Temp from './components/Temp';
 
@@ -17,9 +16,7 @@ const pb = new PocketBase(URL);
 
 const App = () => {
   return (
-    <PaperProvider>
-      <Temp />
-    </PaperProvider>
+    <Temp />
   );
 }
 

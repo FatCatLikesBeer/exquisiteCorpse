@@ -9,7 +9,7 @@ const Settings = () => {
 
   return (
     <View style={styles.homeScreen}>
-      <Text style={[{ fontFamily: "Times New Roman" }, { 'color': parsedTheme.colors.text, fontSize: 20 }]}>Theme Settings</Text>
+      <Text style={[{ 'color': parsedTheme.colors.text, fontSize: 20 }]}>Theme Settings</Text>
       <ThemeSelector />
     </View>
   );
@@ -19,7 +19,8 @@ const styles = StyleSheet.create({
   homeScreen: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    alignContent: 'center',
   },
   text: {
     color: 'grey',

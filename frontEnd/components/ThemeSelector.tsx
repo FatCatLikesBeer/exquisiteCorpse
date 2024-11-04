@@ -1,32 +1,35 @@
 import React, { useContext, useState } from "react";
-import { View, Text, StyleSheet, Button, SafeAreaView } from 'react-native';
-import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { SegmentedButtons } from "react-native-paper";
 
 import { LightModeContext } from "./context/LightModeContext";
-
-import type { themeType } from '../functions/themeParser';
+import { useTheme } from 'react-native-paper';
 
 const ThemeSelector = () => {
   const { userSelectedTheme, setUserSelectedTheme } = useContext(LightModeContext);
+  const paperTheme = useTheme();
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container]}>
       <SegmentedButtons
+        theme={paperTheme}
         value={userSelectedTheme}
         onValueChange={setUserSelectedTheme}
         buttons={[
           {
             value: 'light',
             label: 'Light',
+            accessibilityLabel: 'Light Theme',
           },
           {
             value: 'dark',
             label: 'Dark',
+            accessibilityLabel: 'Dark Theme',
           },
           {
             value: 'auto',
             label: 'Auto',
+            accessibilityLabel: 'Auto/System Settings Theme',
           }
         ]}
       />

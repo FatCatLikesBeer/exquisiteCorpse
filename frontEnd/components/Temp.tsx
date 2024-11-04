@@ -4,7 +4,7 @@ import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts } from 'expo-font';
-import * as SplashScreen from 'expo-splash-screen';
+import { PaperProvider, MD3DarkTheme, MD3LightTheme } from 'react-native-paper';
 
 import Binder from './Binder';
 import Settings from './Settings';
@@ -43,6 +43,23 @@ const MyDarkTheme = {
   }
 }
 
+const PaperLight = {
+  ...MD3LightTheme,
+  colors: {
+    ...MD3LightTheme.colors,
+    primary: 'rgb(162, 61, 52)',
+    primaryContainer: 'rgb(255, 218, 213)',
+  },
+};
+const PaperDark = {
+  ...MD3DarkTheme,
+  colors: {
+    ...MD3DarkTheme.colors,
+    primary: 'rgb(255, 180, 170)',
+    primaryContainer: 'rgb(130, 38, 31)',
+  }
+};
+
 const Temp = () => {
   const [loaded, error] = useFonts({
     "BodoniMada": require('../assets/fonts/BodoniModa-VariableFont_opsz,wght.ttf'),
@@ -52,6 +69,7 @@ const Temp = () => {
   });
   const [userSelectedTheme, setUserSelectedTheme] = useState<themeType>('light');
   const [parsedTheme, setParsedTheme] = useState(MyDefaultTheme);
+  const [paperTheme, setPaperTheme] = useState(PaperLight);
 
   // Get stored theme on load
   useEffect(() => {
@@ -60,8 +78,7 @@ const Temp = () => {
         if (!storedTheme) { storedTheme = 'light'; }
         setUserSelectedTheme(storedTheme);
         setParsedTheme(themeParser(userSelectedTheme) == 'light' ? MyDefaultTheme : MyDarkTheme);
-      }
-      );
+      });
   }, []);
 
   // Handle theme AsyncStorage and parsing on change
@@ -78,23 +95,29 @@ const Temp = () => {
     }
   }, [userSelectedTheme]);
 
+  useEffect(() => {
+    setPaperTheme(parsedTheme.colors.text == 'black' ? PaperLight : PaperDark);
+  }, [parsedTheme])
+
   return (
-    <LightModeContext.Provider value={{ setUserSelectedTheme, userSelectedTheme, parsedTheme }}>
-      <FontFamilyContext.Provider value={""}>
-        <NavigationContainer theme={parsedTheme}>
-          <StatusBar />
-          <Tab.Navigator>
-            <Tab.Screen name="Settings" component={Settings} />
-            <Tab.Screen name="Read" component={Binder} />
-            <Tab.Screen name="Write" component={WriteScreen} />
-          </Tab.Navigator>
-        </NavigationContainer>
-      </FontFamilyContext.Provider>
-    </LightModeContext.Provider >
+    <PaperProvider theme={paperTheme}>
+      <LightModeContext.Provider value={{ setUserSelectedTheme, userSelectedTheme, parsedTheme }}>
+        <FontFamilyContext.Provider value={""}>
+          <NavigationContainer theme={parsedTheme}>
+            <StatusBar />
+            <Tab.Navigator>
+              <Tab.Screen name="Settings" component={Settings} />
+              <Tab.Screen name="Read" component={Binder} />
+              <Tab.Screen name="Write" component={WriteScreen} />
+            </Tab.Navigator>
+          </NavigationContainer>
+        </FontFamilyContext.Provider>
+      </LightModeContext.Provider >
+    </PaperProvider>
   );
 }
 
-async function storeSelectedTheme(theme: themeType) {
+async function storeSelectedTheme(theme: themeType): Promise<void> {
   try {
     await AsyncStorage.setItem(KEY_USER_STORED_THEME, theme);
   } catch (error) {
