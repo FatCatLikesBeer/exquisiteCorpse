@@ -16,15 +16,16 @@ import * as Haptics from 'expo-haptics';
 
 import { LightModeContext } from "./context/LightModeContext";
 import { fetchPrompt } from "../functions/fetchPromp";
+import PocketBaseContext from "./context/PocketBaseContext";
 
-const WriteContainer = ({ route }) => {
-  const { pb } = route.params;
+const WriteContainer = () => {
   const [promptValue, setPromptValue] = useState<string>("NoValue");
   const [userFold, setUserFold] = useState<string>("");
   const { parsedTheme } = useContext(LightModeContext);
   const paperTheme = useTheme();
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [submittingFold, setSubmittingFold] = useState<boolean>(false);
+  const pb = useContext(PocketBaseContext);
 
   const inputRef = useRef(null);
 

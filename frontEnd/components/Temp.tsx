@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useCallback } from "react";
 import { Text, View, SafeAreaView, StyleSheet, StatusBar, Appearance } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -53,7 +53,7 @@ const PaperDark = {
   }
 };
 
-const Temp = ({ pb }) => {
+const Temp = () => {
   const [loaded, error] = useFonts({
     "BodoniMada": require('../assets/fonts/BodoniModa-VariableFont_opsz,wght.ttf'),
     "NunitoSans": require('../assets/fonts/NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf'),
@@ -114,7 +114,7 @@ const Temp = ({ pb }) => {
                 }
               })}
             >
-              <Tab.Screen name="Write" component={WriteContainer} initialParams={{ pb }} />
+              <Tab.Screen name="Write" component={WriteContainer} />
               <Tab.Screen name="Read" component={Binder} />
               <Tab.Screen name="Profile" component={Settings} />
             </Tab.Navigator>

@@ -1,9 +1,10 @@
-import React from 'react';
-import { StyleSheet } from 'react-native';
+import React, { createContext } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import PocketBase from 'pocketbase';
 
 import Temp from './components/Temp';
+
+import PocketBaseContext from './components/context/PocketBaseContext';
 
 const URL = process.env.EXPO_PUBLIC_EC_API_URL;
 const ADMIN_USERANME = process.env.EXPO_PUBLIC_ADMIN_USERNAME;
@@ -18,18 +19,11 @@ const pb = new PocketBase(URL);
 const App = () => {
   return (
     <SafeAreaProvider>
-      <Temp pb={pb} />
+      <PocketBaseContext.Provider value={pb}>
+        <Temp />
+      </PocketBaseContext.Provider>
     </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  app: {
-    flex: 1,
-    justifyContent: 'center',
-    alignContent: 'center',
-    alignItems: 'center',
-  }
-});
 
 export default App;
