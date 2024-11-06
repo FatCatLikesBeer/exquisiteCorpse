@@ -33,7 +33,7 @@ const Binder = () => {
 
   return (
     <ScrollView>
-      <View>
+      <View style={styles.binderContainer}>
         {sheets.length == 0 ? <ActivityIndicator size="large" color="rgb(120, 69, 172)" /> : sheets.map((sheet) => {
           let generatedKey = keyUniquizer(sheet[3].id);
           return <SheetContainer key={generatedKey} sheet={sheet} />
@@ -44,10 +44,8 @@ const Binder = () => {
 }
 
 const styles = StyleSheet.create({
-  scrollViewContainer: {
-    flex: 1,
-    paddingLeft: 10,
-    paddingRight: 10,
+  binderContainer: {
+    margin: 16,
   },
 });
 

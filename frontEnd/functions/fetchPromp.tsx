@@ -1,4 +1,5 @@
 // Return an object whos contents are from a fold or an object whos content property is undefined
+
 export const fetchPrompt = async (pb) => {
   let result: any = { content: undefined }
   const rng = Math.floor(Math.random() * 4);
@@ -23,6 +24,5 @@ export const fetchPrompt = async (pb) => {
   if (result.content != undefined) {
     result.content = `...${result.content.slice(-100)}`;
   }
-  console.log(result);
   return result;
 }

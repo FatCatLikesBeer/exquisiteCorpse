@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react";
-import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import React, { useContext } from "react";
+import { StyleSheet, SafeAreaView } from 'react-native';
 import { SegmentedButtons } from "react-native-paper";
 
 import { LightModeContext } from "./context/LightModeContext";

@@ -16,7 +16,7 @@ const pb = new PocketBase(URL);
 
 const App = () => {
   return (
-    <Temp />
+    <Temp pb={pb} />
   );
 }
 
@@ -30,16 +30,3 @@ const styles = StyleSheet.create({
 });
 
 export default App;
-
-// Colors:
-// #3A2E39    Darkgrey
-// #1E555C    bluish
-// linen    eggshell
-// #EDB183    straw
-// #F15152    persimin
-
-// D7D6D4 cool light grey
-// C2B59A dark tan
-// 2E3F37 dark forest green
-// 7E0D04 crimson
-// 809D9F cold slate

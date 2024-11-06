@@ -9,6 +9,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 import Binder from './Binder';
 import Settings from './Settings';
+import WriteContainer from "./WriteContainer";
 import themeParser from "../functions/themeParser";
 import type { themeType } from '../functions/themeParser';
 
@@ -16,15 +17,6 @@ import { LightModeContext } from "./context/LightModeContext";
 import { FontFamilyContext, FontOptions } from "./context/FontFamilyContext";
 
 const KEY_USER_STORED_THEME = 'userStoredTheme';
-
-const WriteScreen = () => {
-  const { parsedTheme } = useContext(LightModeContext);
-  return (
-    <View style={styles.homeScreen}>
-      <Text style={{ 'color': parsedTheme.colors.text }}>Write</Text>
-    </View>
-  );
-}
 
 const MyDefaultTheme = {
   ...DefaultTheme,
@@ -43,27 +35,25 @@ const MyDarkTheme = {
     text: 'white',
   }
 }
-console.log("light theme navigation", MyDefaultTheme);
-console.log("dark theme navigation ", MyDarkTheme);
 
 const PaperLight = {
   ...MD3LightTheme,
   colors: {
     ...MD3LightTheme.colors,
-    primary: 'rgb(162, 61, 52)',
-    primaryContainer: 'rgb(255, 218, 213)',
+    primary: 'rgb(120, 69, 172)',
+    primaryContainer: 'rgb(240, 219, 255)',
   },
 };
 const PaperDark = {
   ...MD3DarkTheme,
   colors: {
     ...MD3DarkTheme.colors,
-    primary: 'rgb(255, 180, 170)',
-    primaryContainer: 'rgb(130, 38, 31)',
+    primary: 'rgb(220, 184, 255)',
+    primaryContainer: 'rgb(95, 43, 146)',
   }
 };
 
-const Temp = () => {
+const Temp = ({ pb }) => {
   const [loaded, error] = useFonts({
     "BodoniMada": require('../assets/fonts/BodoniModa-VariableFont_opsz,wght.ttf'),
     "NunitoSans": require('../assets/fonts/NunitoSans-VariableFont_YTLC,opsz,wdth,wght.ttf'),
@@ -123,8 +113,8 @@ const Temp = () => {
                 }
               })}
             >
+              <Tab.Screen name="Write" component={WriteContainer} initialParams={{ pb }} />
               <Tab.Screen name="Read" component={Binder} />
-              <Tab.Screen name="Write" component={WriteScreen} />
               <Tab.Screen name="Profile" component={Settings} />
             </Tab.Navigator>
           </NavigationContainer>

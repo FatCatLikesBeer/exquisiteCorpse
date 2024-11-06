@@ -15,7 +15,7 @@ function keyUniquizer(key: string) {
 
 function SheetContainer({ sheet }) {
   return (
-    <View style={styles.container}>
+    <View>
       <Text>
         {sheet.map((fold) => {
           let generatedKey = keyUniquizer(fold.id);
