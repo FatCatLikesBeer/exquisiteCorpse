@@ -1,5 +1,6 @@
 import React from 'react';
-import { Text, View, SafeAreaView, ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import PocketBase from 'pocketbase';
 
 import Temp from './components/Temp';
@@ -16,7 +17,9 @@ const pb = new PocketBase(URL);
 
 const App = () => {
   return (
-    <Temp pb={pb} />
+    <SafeAreaProvider>
+      <Temp pb={pb} />
+    </SafeAreaProvider>
   );
 }
 

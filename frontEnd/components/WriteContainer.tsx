@@ -11,6 +11,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import { Button, useTheme } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from 'expo-haptics';
 
 import { LightModeContext } from "./context/LightModeContext";
@@ -81,10 +82,10 @@ const WriteContainer = ({ route }) => {
   }, []);
 
   return (
-    <ScrollView>
-      <RefreshControl onRefresh={onRefresh} refreshing={refreshing} colors={[paperTheme.colors.primary]} tintColor={paperTheme.colors.primary} />
-      <View style={styles.container}>
-        <KeyboardAvoidingView>
+    <KeyboardAvoidingView>
+      <ScrollView>
+        <RefreshControl onRefresh={onRefresh} refreshing={refreshing} colors={[paperTheme.colors.primary]} tintColor={paperTheme.colors.primary} />
+        <View style={styles.container}>
           {promptValue == 'NoValue' ? <ActivityIndicator size="large" color="rgb(120, 69, 172)" />
             :
             <View>
@@ -104,9 +105,9 @@ const WriteContainer = ({ route }) => {
               <ConfirmationButton />
             </View>
           }
-        </KeyboardAvoidingView>
-      </View>
-    </ScrollView>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 

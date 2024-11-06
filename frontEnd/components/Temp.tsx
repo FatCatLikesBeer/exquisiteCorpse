@@ -100,6 +100,7 @@ const Temp = ({ pb }) => {
             <StatusBar />
             <Tab.Navigator
               screenOptions={({ route }) => ({
+                tabBarHideOnKeyboard: true,
                 tabBarIcon: ({ color, size }) => {
                   const icons = {
                     Read: "book-open-page-variant",
