@@ -11,7 +11,6 @@ import {
   RefreshControl,
 } from 'react-native';
 import { Button, useTheme } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
 import * as Haptics from 'expo-haptics';
 
 import { LightModeContext } from "./context/LightModeContext";
@@ -53,7 +52,8 @@ const WriteContainer = () => {
     const buttonLabel: string = "Hold to Submit";
 
     const submitFunction = () => {
-      console.log(userFold);
+      console.log("authStore:", pb.authStore.model);
+      console.log("user fold:", userFold);
       Haptics.notificationAsync(
         Haptics.NotificationFeedbackType.Success
       );
@@ -66,7 +66,14 @@ const WriteContainer = () => {
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', alignContent: 'center' }}>
             <Text style={{ color: userFold.length < 350 ? parsedTheme.colors.text : 'red' }}>{userFold.length}/400</Text>
           </View>
-          <Button theme={paperTheme} mode="contained-tonal" style={{ flex: 2 }} onLongPress={submitFunction} delayLongPress={3000}>{buttonLabel}</Button>
+          <Button
+            theme={paperTheme}
+            mode="contained-tonal"
+            style={{ flex: 2 }}
+            onLongPress={submitFunction}
+          >
+            {buttonLabel}
+          </Button>
         </View>
       </View>
     );
@@ -79,7 +86,10 @@ const WriteContainer = () => {
         console.log(response);
         setPromptValue(response.content);
       })
-      .finally(() => setRefreshing(false));
+      .finally(() => {
+        setUserFold("");
+        setRefreshing(false);
+      });
   }, []);
 
   return (
@@ -87,7 +97,7 @@ const WriteContainer = () => {
       <ScrollView>
         <RefreshControl onRefresh={onRefresh} refreshing={refreshing} colors={[paperTheme.colors.primary]} tintColor={paperTheme.colors.primary} />
         <View style={styles.container}>
-          {promptValue == 'NoValue' ? <ActivityIndicator size="large" color="rgb(120, 69, 172)" />
+          {promptValue == 'NoValue' ? <ActivityIndicator size="large" color={paperTheme.colors.primary} />
             :
             <View>
               <PromptComponent />
