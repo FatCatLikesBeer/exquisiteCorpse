@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import PocketBase from 'pocketbase';
+import PocketBase, { AsyncAuthStore } from 'pocketbase';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import Temp from './components/Temp'; // Temp should be 'Main' so don't delete it!
 
@@ -14,8 +15,11 @@ const USER1_PASSWORD = process.env.EXPO_PUBLIC_USER1_PASSWORD;
 const USER2_USERNAME = process.env.EXPO_PUBLIC_USER2_USERNAME;
 const USER2_PASSWORD = process.env.EXPO_PUBLIC_USER2_PASSWORD;
 
-const pb = new PocketBase(URL);
-pb.collection('users').authWithPassword(USER2_USERNAME, USER2_PASSWORD);
+const store = new AsyncAuthStore({
+  save: async (serialized) => AsyncStorage.setItem('pb_auth', serialized),
+  initial: AsyncStorage.getItem('pb_auth'),
+});
+const pb = new PocketBase(URL, store);
 
 const App = () => {
   return (

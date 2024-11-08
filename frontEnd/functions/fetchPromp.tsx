@@ -1,9 +1,9 @@
 // Return an object whos contents are from a fold or an object whos content property is undefined
 
-import PocketBase, { RecordModel } from 'pocketbase';
+import PocketBase from 'pocketbase';
 
 export const fetchPrompt = async (pb: PocketBase) => {
-  let result: RecordModel;
+  let result: any = { content: undefined };
   const rng = Math.floor(Math.random() * 4);
   switch (rng) {
     case 0:

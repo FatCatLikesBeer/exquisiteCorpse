@@ -1,3 +1,9 @@
+// WriteContainer.tsx
+// TODO: submit button will have a confirmation popup
+
+const USER2_USERNAME = process.env.EXPO_PUBLIC_USER2_USERNAME;
+const USER2_PASSWORD = process.env.EXPO_PUBLIC_USER2_PASSWORD;
+
 import React, { useState, useContext, useEffect, useCallback, useRef } from "react";
 import {
   View,
@@ -12,18 +18,20 @@ import {
 } from 'react-native';
 import { Button, useTheme } from "react-native-paper";
 import * as Haptics from 'expo-haptics';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { LightModeContext } from "./context/LightModeContext";
 import { fetchPrompt } from "../functions/fetchPromp";
 import PocketBaseContext from "./context/PocketBaseContext";
 
 const WriteContainer = () => {
-  const [promptValue, setPromptValue] = useState<string>("NoValue");
+  const [promptValue, setPromptValue] = useState<string>("AwaitingResponse");
   const [userFold, setUserFold] = useState<string>("");
   const { parsedTheme } = useContext(LightModeContext);
   const paperTheme = useTheme();
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const [submittingFold, setSubmittingFold] = useState<boolean>(false);
+  const [inputFocused, setInputFocused] = useState<boolean>(true);
   const pb = useContext(PocketBaseContext);
 
   const inputRef = useRef(null);
@@ -31,14 +39,17 @@ const WriteContainer = () => {
   useEffect(() => {
     fetchPrompt(pb)
       .then((response) => {
-        console.log("WriteContainer.tsx: fetchPrompt(): ", response);
         setPromptValue(response.content);
+      })
+      .catch((error) => {
+        console.error("WriteContainer.tsx useEffect: @root", error);
       });
 
     if (inputRef.current) {
       inputRef.current.focus();
     }
   }, []);
+
 
   const PromptComponent = () => {
     return (
@@ -49,19 +60,22 @@ const WriteContainer = () => {
   }
 
   const ConfirmationButton = () => {
-    const buttonLabel: string = "Hold to Submit";
+    const unauthenticatedLabel: string = "Login or Signup";
+    const authenticatedLabel: string = "Hold to Submit";
+    const [buttonLabel, setButtonLabel] = useState<string>(unauthenticatedLabel);
+
+    useEffect(() => {
+      setButtonLabel(pb.authStore.isValid ? authenticatedLabel : unauthenticatedLabel);
+    }, [inputFocused]);
 
     const submitFunction = () => {
-      console.log("authStore:", pb.authStore.model);
-      console.log("user fold:", userFold);
-      Haptics.notificationAsync(
-        Haptics.NotificationFeedbackType.Success
-      );
-    }
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      console.log("WriteContainer, ConfirmationButton, submitFunction: auth state:", pb.authStore.model);
+    };
 
     return (
       <View style={{ flex: 1, paddingTop: 10 }}>
-        <View></View>
+        {/* <View></View> TODO: Create a loading indicator?*/}
         <View style={{ flex: 1, flexDirection: "row" }}>
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', alignContent: 'center' }}>
             <Text style={{ color: userFold.length < 350 ? parsedTheme.colors.text : 'red' }}>{userFold.length}/400</Text>
@@ -70,7 +84,7 @@ const WriteContainer = () => {
             theme={paperTheme}
             mode="contained-tonal"
             style={{ flex: 2 }}
-            onLongPress={submitFunction}
+            onPress={submitFunction}
           >
             {buttonLabel}
           </Button>
@@ -83,21 +97,27 @@ const WriteContainer = () => {
     setRefreshing(true);
     fetchPrompt(pb)
       .then((response) => {
-        console.log(response);
         setPromptValue(response.content);
       })
       .finally(() => {
         setUserFold("");
         setRefreshing(false);
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       });
   }, []);
+
+  const cycleInputFocused = () => {
+    setInputFocused(!inputFocused);
+  }
 
   return (
     <KeyboardAvoidingView>
       <ScrollView>
         <RefreshControl onRefresh={onRefresh} refreshing={refreshing} colors={[paperTheme.colors.primary]} tintColor={paperTheme.colors.primary} />
         <View style={styles.container}>
-          {promptValue == 'NoValue' ? <ActivityIndicator size="large" color={paperTheme.colors.primary} />
+          {promptValue == 'AwaitingResponse'
+            ?
+            <ActivityIndicator size="large" color={paperTheme.colors.primary} />
             :
             <View>
               <PromptComponent />
@@ -111,6 +131,7 @@ const WriteContainer = () => {
                 multiline
                 maxLength={400}
                 scrollEnabled={false}
+                onFocus={cycleInputFocused}
                 ref={inputRef}
               />
               <ConfirmationButton />
@@ -123,6 +144,9 @@ const WriteContainer = () => {
 }
 
 const styles = StyleSheet.create({
+  scroll_view: {
+    height: "100%",
+  },
   container: {
     justifyContent: 'center',
     alignItems: 'center',
