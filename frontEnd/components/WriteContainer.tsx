@@ -1,8 +1,8 @@
 // WriteContainer.tsx
-// TODO: submit button will have a confirmation popup
-
-const USER2_USERNAME = process.env.EXPO_PUBLIC_USER2_USERNAME;
-const USER2_PASSWORD = process.env.EXPO_PUBLIC_USER2_PASSWORD;
+// TODO: review before submission (maybe radio button, check mark?)
+// TODO: submit button will have a confirmation popup before actual submission
+// TODO: Submit button will have a loading animation
+// TODO: Submit button should actually work
 
 import React, { useState, useContext, useEffect, useCallback, useRef } from "react";
 import {
@@ -18,7 +18,6 @@ import {
 } from 'react-native';
 import { Button, useTheme } from "react-native-paper";
 import * as Haptics from 'expo-haptics';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { LightModeContext } from "./context/LightModeContext";
 import { fetchPrompt } from "../functions/fetchPromp";
@@ -75,7 +74,7 @@ const WriteContainer = () => {
 
     return (
       <View style={{ flex: 1, paddingTop: 10 }}>
-        {/* <View></View> TODO: Create a loading indicator?*/}
+        {/* <View></View> TODO: Create a loading indicator here? */}
         <View style={{ flex: 1, flexDirection: "row" }}>
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', alignContent: 'center' }}>
             <Text style={{ color: userFold.length < 350 ? parsedTheme.colors.text : 'red' }}>{userFold.length}/400</Text>

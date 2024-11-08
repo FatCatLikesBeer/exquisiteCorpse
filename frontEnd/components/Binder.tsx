@@ -1,3 +1,5 @@
+// Binder.tsx
+// TODO: add an inline login / signup component every 3, 5, or 7 sheets
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View, ActivityIndicator } from 'react-native';
 
