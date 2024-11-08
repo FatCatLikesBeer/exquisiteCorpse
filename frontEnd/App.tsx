@@ -1,8 +1,8 @@
-import React, { createContext } from 'react';
+import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import PocketBase from 'pocketbase';
 
-import Temp from './components/Temp';
+import Temp from './components/Temp'; // Temp should be 'Main' so don't delete it!
 
 import PocketBaseContext from './components/context/PocketBaseContext';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, ActivityIndicator, TextInput, Pressable } from 'react-native';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { A } from '@expo/html-elements';
 import PocketBase from 'pocketbase';
 import * as emailValidator from 'email-validator';

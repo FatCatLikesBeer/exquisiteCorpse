@@ -14,8 +14,5 @@ export const fetchSheets = async () => {
   const finalFoldDetail = queryAnyFinalFold.items[0];
   const result = [firstFoldDetail, secondFoldDetail, thirdFoldDetail, finalFoldDetail];
   result.forEach((elem) => { delete elem.expand });
-  result.forEach((elem, index) => {
-    console.log(`Sheet no. ${index}`, elem);
-  });
   return result;
 }
