@@ -20,7 +20,7 @@ const Binder = () => {
   useEffect(() => {
     async function getSheets() {
       const result = await fetchSheets();
-      let carbonCopy = [...sheets];
+      let carbonCopy = [...sheets]; // This is here just to create multiple sheets
       carbonCopy.push(result);
       carbonCopy = [...carbonCopy, ...carbonCopy];
       carbonCopy = [...carbonCopy, ...carbonCopy];

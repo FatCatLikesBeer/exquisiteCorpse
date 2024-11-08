@@ -15,7 +15,7 @@ const USER2_USERNAME = process.env.EXPO_PUBLIC_USER2_USERNAME;
 const USER2_PASSWORD = process.env.EXPO_PUBLIC_USER2_PASSWORD;
 
 const pb = new PocketBase(URL);
-pb.admins.authWithPassword(ADMIN_USERNAME, ADMIN_PASSWORD);
+pb.collection('users').authWithPassword(USER2_USERNAME, USER2_PASSWORD);
 
 const App = () => {
   return (

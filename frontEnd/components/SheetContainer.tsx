@@ -15,7 +15,7 @@ function keyUniquizer(key: string) {
 
 function SheetContainer({ sheet }) {
   return (
-    <View>
+    <View style={{ marginBottom: 16 }}>
       <Text>
         {sheet.map((fold) => {
           let generatedKey = keyUniquizer(fold.id);
@@ -25,11 +25,5 @@ function SheetContainer({ sheet }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    margin: 16,
-  },
-});
 
 export default SheetContainer;

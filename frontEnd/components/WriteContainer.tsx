@@ -31,7 +31,7 @@ const WriteContainer = () => {
   useEffect(() => {
     fetchPrompt(pb)
       .then((response) => {
-        console.log(response);
+        console.log("WriteContainer.tsx: fetchPrompt(): ", response);
         setPromptValue(response.content);
       });
 
