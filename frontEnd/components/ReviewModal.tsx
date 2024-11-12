@@ -1,4 +1,5 @@
-import React, { useContext, useRef, useEffect } from 'react';
+// ReviewModal.tsx
+import React, { useContext, useRef, useEffect, useState } from 'react';
 import {
   Modal,
   Text,
@@ -6,7 +7,7 @@ import {
   Alert,
   StyleSheet,
 } from 'react-native';
-import { Button, IconButton } from 'react-native-paper';
+import { Button, IconButton, ActivityIndicator } from 'react-native-paper';
 const closeButtonIcon = require('../assets/close.png');
 
 import * as Haptics from 'expo-haptics';
@@ -17,11 +18,8 @@ import PocketBaseContext from './context/PocketBaseContext';
 const ReviewModal = ({ userFold, promptData, modalVisible, setModalVisible }) => {
   const { parsedTheme } = useContext(LightModeContext);
   const pb = useContext(PocketBaseContext);
+  const [submittingFold, setSubmittingFold] = useState<boolean>(false);
   const modalRef = useRef(null);
-
-  useEffect(() => {
-    console.log(parsedTheme.colors);
-  }, []);
 
   const submitFold = async () => {
     const payload = {
@@ -31,11 +29,13 @@ const ReviewModal = ({ userFold, promptData, modalVisible, setModalVisible }) =>
     };
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     console.log(payload);
+    setSubmittingFold(!submittingFold);
   }
 
   const closeModal = () => {
     setModalVisible(!modalVisible);
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+    setSubmittingFold(false);
   }
 
   return (
@@ -51,11 +51,23 @@ const ReviewModal = ({ userFold, promptData, modalVisible, setModalVisible }) =>
     >
       <View style={styles.centeredView}>
         <View style={[{ backgroundColor: parsedTheme.colors.background }, styles.modalView]}>
-          <IconButton icon={closeButtonIcon} onPress={closeModal} style={styles.closeButton} />
-          <Text style={[{ color: parsedTheme.colors.text }, styles.modalText]}>{promptData.content} {userFold}</Text>
+          <IconButton
+            icon={closeButtonIcon}
+            onPress={closeModal}
+            style={styles.closeButton}
+            mode="contained-tonal"
+          />
+          {
+            submittingFold
+              ?
+              <ActivityIndicator />
+              :
+              <Text style={[{ color: 'grey' }, styles.modalText]}>{promptData.content} <Text style={{ color: parsedTheme.colors.text }}>{userFold}</Text></Text>
+          }
           <Button
-            onPress={() => { setModalVisible(!modalVisible); submitFold() }}
+            onPress={submitFold}
             mode='contained-tonal'
+            style={styles.submitButton}
           >
             Submit
           </Button>
@@ -66,10 +78,14 @@ const ReviewModal = ({ userFold, promptData, modalVisible, setModalVisible }) =>
 }
 
 const styles = StyleSheet.create({
+  submitButton: {
+    position: 'absolute',
+    bottom: 20,
+  },
   closeButton: {
     position: 'absolute',
-    top: 1,
-    left: 1,
+    top: 0,
+    left: 0,
     height: 30,
     width: 30,
   },
@@ -79,12 +95,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   modalView: {
+    height: 600,
     margin: 8,
     borderColor: 'rgb(120, 69, 172)',
     borderWidth: 1,
     borderRadius: 10,
     padding: 20,
     alignItems: 'center',
+    justifyContent: 'center',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

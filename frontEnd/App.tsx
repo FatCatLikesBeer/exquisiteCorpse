@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import PocketBase, { AsyncAuthStore } from 'pocketbase';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -32,3 +32,6 @@ const App = () => {
 }
 
 export default App;
+
+// TODO: Submit button will have a loading animation
+// TODO: Submit button should actually work

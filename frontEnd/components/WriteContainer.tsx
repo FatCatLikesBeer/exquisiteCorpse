@@ -1,8 +1,4 @@
 // WriteContainer.tsx
-// TODO: review before submission (maybe radio button, check mark?)
-// TODO: submit button will have a confirmation popup before actual submission
-// TODO: Submit button will have a loading animation
-// TODO: Submit button should actually work
 
 import React, { useState, useContext, useEffect, useCallback, useRef } from "react";
 import {
@@ -31,10 +27,22 @@ const WriteContainer = () => {
   const { parsedTheme } = useContext(LightModeContext);
   const paperTheme = useTheme();
   const [refreshing, setRefreshing] = useState<boolean>(false);
-  const [submittingFold, setSubmittingFold] = useState<boolean>(false);
   const [inputFocused, setInputFocused] = useState<boolean>(true);
   const pb = useContext(PocketBaseContext);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
+
+  useEffect(() => {
+    if (userFold.length <= 0) {
+      setDisableSubmit(true);
+    } else {
+      setDisableSubmit(false);
+    }
+  }, [userFold]);
+
+  useEffect(() => {
+
+  });
 
   const inputRef = useRef(null);
 
@@ -52,13 +60,9 @@ const WriteContainer = () => {
     }
   }, []);
 
-
-  const PromptComponent = () => {
-    return (
-      <Text style={[styles.prompt, { color: parsedTheme.colors.text }, { backgroundColor: 'lightgrey' }]}>
-        {promptData.content == undefined ? "First Fold" : promptData.content}
-      </Text>
-    );
+  const parsePromptAndUserFold = (text) => {
+    const inputWithoutPrompt = text.slice(promptData.content?.length + 1);
+    setUserFold(inputWithoutPrompt);
   }
 
   const ConfirmationButton = () => {
@@ -78,8 +82,7 @@ const WriteContainer = () => {
     };
 
     return (
-      <View style={{ flex: 1, paddingTop: 10 }}>
-        {/* <View></View> TODO: Create a loading indicator here? */}
+      <View style={{ flex: 1, paddingTop: 20 }}>
         <View style={{ flex: 1, flexDirection: "row" }}>
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', alignContent: 'center' }}>
             <Text style={{ color: userFold.length < 350 ? parsedTheme.colors.text : userFold.length > 390 ? 'red' : 'orange' }}>{userFold.length}/400</Text>
@@ -89,6 +92,7 @@ const WriteContainer = () => {
             mode="contained-tonal"
             style={{ flex: 2 }}
             onPress={submitFunction}
+            disabled={disableSubmit}
           >
             {buttonLabel}
           </Button>
@@ -102,10 +106,10 @@ const WriteContainer = () => {
     fetchPrompt(pb)
       .then((response) => {
         setPromptData(response);
-      })
-      .finally(() => {
         setUserFold("");
         setRefreshing(false);
+      })
+      .finally(() => {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       });
   }, []);
@@ -116,27 +120,29 @@ const WriteContainer = () => {
 
   return (
     <KeyboardAvoidingView behavior="height">
-      <ScrollView>
-        <RefreshControl onRefresh={onRefresh} refreshing={refreshing} colors={[paperTheme.colors.primary]} tintColor={paperTheme.colors.primary} />
+      <ScrollView refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} colors={[paperTheme.colors.primary]} tintColor={paperTheme.colors.primary} />} style={styles.scroll_view}>
         <View style={styles.container}>
           {promptData.content == 'AwaitingResponse'
             ?
             <ActivityIndicator size="large" color={paperTheme.colors.primary} />
             :
             <View>
-              <PromptComponent />
               <TextInput
                 style={[styles.textInput, { color: parsedTheme.colors.text }]}
-                value={userFold}
-                onChangeText={setUserFold}
+                value={(promptData.content == undefined ? "" : promptData.content + " ") + userFold}
+                onChangeText={parsePromptAndUserFold}
                 textAlignVertical="top"
                 returnKeyType="done"
                 blurOnSubmit={true}
                 multiline
-                maxLength={400}
-                scrollEnabled={false}
+                scrollEnabled={true}
                 onFocus={cycleInputFocused}
                 ref={inputRef}
+                maxLength={(promptData.content?.length + 401 || 400)}
+                selection={{
+                  start: (promptData.content?.length + 1 || 0) + userFold.length,
+                  end: (promptData.content?.length + 1 || 0) + userFold.length
+                }}
               />
               <ConfirmationButton />
             </View>
@@ -150,7 +156,7 @@ const WriteContainer = () => {
 
 const styles = StyleSheet.create({
   scroll_view: {
-    height: "100%",
+    height: 800,
   },
   container: {
     justifyContent: 'center',
@@ -172,7 +178,7 @@ const styles = StyleSheet.create({
     fontSize: 8,
   },
   textInput: {
-    minWidth: Dimensions.get('window').width * .9,
+    width: Dimensions.get('window').width * .9,
     minHeight: 240,
     borderColor: 'rgb(120, 69, 172)',
     borderWidth: 1,
