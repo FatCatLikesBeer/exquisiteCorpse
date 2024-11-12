@@ -18,7 +18,7 @@ import { FontFamilyContext, FontOptions } from "./context/FontFamilyContext";
 
 const KEY_USER_STORED_THEME = 'userStoredTheme';
 
-const MyDefaultTheme = {
+const MyDefaultTheme = {  // React Navigation
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
@@ -27,7 +27,7 @@ const MyDefaultTheme = {
   }
 }
 
-const MyDarkTheme = {
+const MyDarkTheme = {  // React Navigation
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
@@ -36,7 +36,7 @@ const MyDarkTheme = {
   }
 }
 
-const PaperLight = {
+const PaperLight = {  // React Native Paper
   ...MD3LightTheme,
   colors: {
     ...MD3LightTheme.colors,
@@ -44,7 +44,7 @@ const PaperLight = {
     primaryContainer: 'rgb(240, 219, 255)',
   },
 };
-const PaperDark = {
+const PaperDark = {  // React Native Paper
   ...MD3DarkTheme,
   colors: {
     ...MD3DarkTheme.colors,

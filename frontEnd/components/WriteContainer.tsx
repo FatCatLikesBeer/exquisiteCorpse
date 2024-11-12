@@ -15,6 +15,7 @@ import {
   ActivityIndicator,
   ScrollView,
   RefreshControl,
+  Keyboard,
 } from 'react-native';
 import { Button, useTheme } from "react-native-paper";
 import * as Haptics from 'expo-haptics';
@@ -22,9 +23,10 @@ import * as Haptics from 'expo-haptics';
 import { LightModeContext } from "./context/LightModeContext";
 import { fetchPrompt } from "../functions/fetchPromp";
 import PocketBaseContext from "./context/PocketBaseContext";
+import ReviewModal from "./ReviewModal";
 
 const WriteContainer = () => {
-  const [promptValue, setPromptValue] = useState<string>("AwaitingResponse");
+  const [promptData, setPromptData] = useState({ content: "AwaitingResponse" });
   const [userFold, setUserFold] = useState<string>("");
   const { parsedTheme } = useContext(LightModeContext);
   const paperTheme = useTheme();
@@ -32,13 +34,14 @@ const WriteContainer = () => {
   const [submittingFold, setSubmittingFold] = useState<boolean>(false);
   const [inputFocused, setInputFocused] = useState<boolean>(true);
   const pb = useContext(PocketBaseContext);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
 
   const inputRef = useRef(null);
 
   useEffect(() => {
     fetchPrompt(pb)
       .then((response) => {
-        setPromptValue(response.content);
+        setPromptData(response);
       })
       .catch((error) => {
         console.error("WriteContainer.tsx useEffect: @root", error);
@@ -53,14 +56,14 @@ const WriteContainer = () => {
   const PromptComponent = () => {
     return (
       <Text style={[styles.prompt, { color: parsedTheme.colors.text }, { backgroundColor: 'lightgrey' }]}>
-        {promptValue == undefined ? "First Fold" : promptValue}
+        {promptData.content == undefined ? "First Fold" : promptData.content}
       </Text>
     );
   }
 
   const ConfirmationButton = () => {
     const unauthenticatedLabel: string = "Login or Signup";
-    const authenticatedLabel: string = "Hold to Submit";
+    const authenticatedLabel: string = "Review Fold";
     const [buttonLabel, setButtonLabel] = useState<string>(unauthenticatedLabel);
 
     useEffect(() => {
@@ -68,6 +71,8 @@ const WriteContainer = () => {
     }, [inputFocused]);
 
     const submitFunction = () => {
+      setModalVisible(!modalVisible);
+      Keyboard.dismiss();
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       console.log("WriteContainer, ConfirmationButton, submitFunction: auth state:", pb.authStore.model);
     };
@@ -77,7 +82,7 @@ const WriteContainer = () => {
         {/* <View></View> TODO: Create a loading indicator here? */}
         <View style={{ flex: 1, flexDirection: "row" }}>
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', alignContent: 'center' }}>
-            <Text style={{ color: userFold.length < 350 ? parsedTheme.colors.text : 'red' }}>{userFold.length}/400</Text>
+            <Text style={{ color: userFold.length < 350 ? parsedTheme.colors.text : userFold.length > 390 ? 'red' : 'orange' }}>{userFold.length}/400</Text>
           </View>
           <Button
             theme={paperTheme}
@@ -96,7 +101,7 @@ const WriteContainer = () => {
     setRefreshing(true);
     fetchPrompt(pb)
       .then((response) => {
-        setPromptValue(response.content);
+        setPromptData(response);
       })
       .finally(() => {
         setUserFold("");
@@ -110,11 +115,11 @@ const WriteContainer = () => {
   }
 
   return (
-    <KeyboardAvoidingView>
+    <KeyboardAvoidingView behavior="height">
       <ScrollView>
         <RefreshControl onRefresh={onRefresh} refreshing={refreshing} colors={[paperTheme.colors.primary]} tintColor={paperTheme.colors.primary} />
         <View style={styles.container}>
-          {promptValue == 'AwaitingResponse'
+          {promptData.content == 'AwaitingResponse'
             ?
             <ActivityIndicator size="large" color={paperTheme.colors.primary} />
             :
@@ -138,6 +143,7 @@ const WriteContainer = () => {
           }
         </View>
       </ScrollView>
+      <ReviewModal userFold={userFold} promptData={promptData} modalVisible={modalVisible} setModalVisible={setModalVisible} />
     </KeyboardAvoidingView>
   );
 }
@@ -159,6 +165,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'salmon',
     padding: 8,
+    fontSize: 16,
   },
   promptSubheading: {
     color: 'grey',
@@ -166,18 +173,15 @@ const styles = StyleSheet.create({
   },
   textInput: {
     minWidth: Dimensions.get('window').width * .9,
-    height: 240,
+    minHeight: 240,
     borderColor: 'rgb(120, 69, 172)',
     borderWidth: 1,
     borderRadius: 10,
     paddingLeft: 8,
     paddingRight: 8,
     paddingBottom: 4,
+    fontSize: 16,
   }
 });
-
-// Header: 64px
-// Footer: 49px
-// Window: 626px
 
 export default WriteContainer;
