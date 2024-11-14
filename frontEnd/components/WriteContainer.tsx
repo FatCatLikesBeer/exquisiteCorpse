@@ -32,6 +32,7 @@ const WriteContainer = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
 
+  // Disables submit button if userInput is empty
   useEffect(() => {
     if (userFold.length <= 0) {
       setDisableSubmit(true);

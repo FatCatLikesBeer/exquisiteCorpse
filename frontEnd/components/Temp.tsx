@@ -1,5 +1,5 @@
-import React, { useContext, useState, useEffect, useCallback } from "react";
-import { Text, View, SafeAreaView, StyleSheet, StatusBar, Appearance } from 'react-native';
+import React, { useState, useEffect, useCallback } from "react";
+import { StyleSheet, StatusBar, Appearance } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';

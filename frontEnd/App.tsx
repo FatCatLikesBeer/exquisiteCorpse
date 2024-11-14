@@ -33,5 +33,6 @@ const App = () => {
 
 export default App;
 
+// TODO: Tutorial
 // TODO: Submit button will have a loading animation
 // TODO: Submit button should actually work
