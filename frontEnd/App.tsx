@@ -36,3 +36,4 @@ export default App;
 // TODO: Tutorial
 // TODO: Submit button will have a loading animation
 // TODO: Submit button should actually work
+// TODO: Figure out why WriteComponent's <TextInput> element keeps occasionally resizing when inputing text.

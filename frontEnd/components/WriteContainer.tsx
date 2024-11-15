@@ -93,7 +93,7 @@ const WriteContainer = () => {
             mode="contained-tonal"
             style={{ flex: 2 }}
             onPress={submitFunction}
-            disabled={disableSubmit}
+            disabled={buttonLabel == authenticatedLabel && disableSubmit}
           >
             {buttonLabel}
           </Button>
@@ -129,6 +129,7 @@ const WriteContainer = () => {
             :
             <View>
               <TextInput
+                spellCheck={false}
                 style={[styles.textInput, { color: parsedTheme.colors.text }]}
                 value={(promptData.content == undefined ? "" : promptData.content + " ") + userFold}
                 onChangeText={parsePromptAndUserFold}

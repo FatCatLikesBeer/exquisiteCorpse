@@ -8,7 +8,7 @@ const foldCollections: Array<string> = [null, 'foldFirst', 'foldSecond', 'foldTh
 
 export const fetchPrompt = async (pb: PocketBase) => {
   let result: any = { content: undefined };
-  const userId: string = pb.authStore.model.id;
+  const userId: string = pb.authStore.model?.id || "";
   const foldSelector: number = Math.floor(Math.random() * 4);
 
   if (foldSelector != 0) {
