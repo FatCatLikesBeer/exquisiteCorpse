@@ -39,7 +39,6 @@ const ThemeSelector = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     alignItems: 'center',
   },
   selectorContainer: {
@@ -54,7 +53,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     color: 'black',
     borderRadius: 12,
-    flex: 1,
   },
 });
 

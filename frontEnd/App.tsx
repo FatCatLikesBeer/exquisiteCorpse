@@ -33,6 +33,8 @@ const App = () => {
 
 export default App;
 
+// TODO: Figure out why the WriteComponent's button keeps re-rendering when typing
+// TODO: Figure out why the Settings' Auth Buttons aren't rendering properly compared to the WriteComponent's button
 // TODO: Signup/Login & Logiout via Settings Component
 // TODO: Submit button will have a loading animation
 // TODO: Submit button should actually work, send folds to back-end

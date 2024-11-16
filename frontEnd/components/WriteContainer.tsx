@@ -3,7 +3,6 @@
 import React, { useState, useContext, useEffect, useCallback, useRef } from "react";
 import {
   View,
-  Text,
   StyleSheet,
   KeyboardAvoidingView,
   TextInput,
@@ -11,15 +10,15 @@ import {
   ActivityIndicator,
   ScrollView,
   RefreshControl,
-  Keyboard,
 } from 'react-native';
-import { Button, useTheme } from "react-native-paper";
+import { useTheme } from "react-native-paper";
 import * as Haptics from 'expo-haptics';
 
 import { LightModeContext } from "./context/LightModeContext";
 import { fetchPrompt } from "../functions/fetchPromp";
 import PocketBaseContext from "./context/PocketBaseContext";
 import ReviewModal from "./ReviewModal";
+import ConfirmationButton from "./ConfirmationButton";
 
 const WriteContainer = () => {
   const [promptData, setPromptData] = useState({ content: "AwaitingResponse" });
@@ -27,7 +26,6 @@ const WriteContainer = () => {
   const { parsedTheme } = useContext(LightModeContext);
   const paperTheme = useTheme();
   const [refreshing, setRefreshing] = useState<boolean>(false);
-  const [inputFocused, setInputFocused] = useState<boolean>(true);
   const pb = useContext(PocketBaseContext);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
@@ -66,42 +64,6 @@ const WriteContainer = () => {
     setUserFold(inputWithoutPrompt);
   }
 
-  const ConfirmationButton = () => {
-    const unauthenticatedLabel: string = "Login or Signup";
-    const authenticatedLabel: string = "Review Fold";
-    const [buttonLabel, setButtonLabel] = useState<string>(unauthenticatedLabel);
-
-    useEffect(() => {
-      setButtonLabel(pb.authStore.isValid ? authenticatedLabel : unauthenticatedLabel);
-    }, [inputFocused]);
-
-    const submitFunction = () => {
-      setModalVisible(!modalVisible);
-      Keyboard.dismiss();
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      console.log("WriteContainer, ConfirmationButton, submitFunction: auth state:", pb.authStore.model);
-    };
-
-    return (
-      <View style={{ flex: 1, paddingTop: 20 }}>
-        <View style={{ flex: 1, flexDirection: "row" }}>
-          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', alignContent: 'center' }}>
-            <Text style={{ color: userFold.length < 350 ? parsedTheme.colors.text : userFold.length > 390 ? 'red' : 'orange' }}>{userFold.length}/400</Text>
-          </View>
-          <Button
-            theme={paperTheme}
-            mode="contained-tonal"
-            style={{ flex: 2 }}
-            onPress={submitFunction}
-            disabled={buttonLabel == authenticatedLabel && disableSubmit}
-          >
-            {buttonLabel}
-          </Button>
-        </View>
-      </View>
-    );
-  }
-
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     fetchPrompt(pb)
@@ -115,8 +77,8 @@ const WriteContainer = () => {
       });
   }, []);
 
-  const cycleInputFocused = () => {
-    setInputFocused(!inputFocused);
+  const toggleModal = () => {
+    setModalVisible(!modalVisible);
   }
 
   return (
@@ -138,7 +100,6 @@ const WriteContainer = () => {
                 blurOnSubmit={true}
                 multiline
                 scrollEnabled={true}
-                onFocus={cycleInputFocused}
                 ref={inputRef}
                 maxLength={(promptData.content?.length + 401 || 400)}
                 selection={{
@@ -146,7 +107,13 @@ const WriteContainer = () => {
                   end: (promptData.content?.length + 1 || 0) + userFold.length
                 }}
               />
-              <ConfirmationButton />
+              <ConfirmationButton
+                pb={pb}
+                toggleModal={toggleModal}
+                paperTheme={paperTheme}
+                userFold={userFold}
+                disableSubmit={disableSubmit}
+              />
             </View>
           }
         </View>
