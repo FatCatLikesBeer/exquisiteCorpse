@@ -33,7 +33,11 @@ const App = () => {
 
 export default App;
 
-// TODO: Tutorial
+// TODO: Signup/Login & Logiout via Settings Component
 // TODO: Submit button will have a loading animation
-// TODO: Submit button should actually work
-// TODO: Figure out why WriteComponent's <TextInput> element keeps occasionally resizing when inputing text.
+// TODO: Submit button should actually work, send folds to back-end
+// TODO: Create Signup/Login modal component
+// TODO: Figure out why WriteComponent's <TextInput> element keeps occasionally resizing when inputing text iOS.
+// TODO: Tutorial
+// TODO: Upload images for pfp
+// TODO: Google/Apple Authentication
