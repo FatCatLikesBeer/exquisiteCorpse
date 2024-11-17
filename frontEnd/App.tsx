@@ -33,6 +33,7 @@ const App = () => {
 
 export default App;
 
+// TODO: add an inline login / signup component every 3, 5, or 7 sheets
 // TODO: Modal dissapears on successful submission
 // TODO: Toast appears on successful/unsuccessful submission
 //

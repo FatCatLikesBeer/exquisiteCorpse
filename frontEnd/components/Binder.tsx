@@ -1,7 +1,8 @@
 // Binder.tsx
-// TODO: add an inline login / signup component every 3, 5, or 7 sheets
+
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View, ActivityIndicator } from 'react-native';
+import { FAB } from 'react-native-paper';
 
 import { fetchSheets } from '../functions/fetchSheets';
 import SheetContainer from './SheetContainer';
@@ -34,18 +35,27 @@ const Binder = () => {
   }, []); // This array needs to be empty so it runs only once on load...
 
   return (
-    <ScrollView>
-      <View style={styles.binderContainer}>
-        {sheets.length == 0 ? <ActivityIndicator size="large" color="rgb(120, 69, 172)" /> : sheets.map((sheet) => {
-          let generatedKey = keyUniquizer(sheet[3].id);
-          return <SheetContainer key={generatedKey} sheet={sheet} />
-        })}
-      </View>
-    </ScrollView>
+    <View>
+      <ScrollView>
+        <View style={styles.binderContainer}>
+          {sheets.length == 0 ? <ActivityIndicator size="large" color="rgb(120, 69, 172)" /> : sheets.map((sheet) => {
+            let generatedKey = keyUniquizer(sheet[3].id);
+            return <SheetContainer key={generatedKey} sheet={sheet} />
+          })}
+        </View>
+      </ScrollView>
+      <FAB icon='plus' style={styles.fab} onPress={() => console.log("Binder.tsx: FAB PRESSED")} mode='elevated' />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  fab: {
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
+  },
   binderContainer: {
     margin: 16,
   },

@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, StatusBar, Appearance } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts } from 'expo-font';
-import { PaperProvider, MD3DarkTheme, MD3LightTheme } from 'react-native-paper';
+import { PaperProvider, MD3DarkTheme, MD3LightTheme, Button } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import Binder from './Binder';
@@ -116,7 +116,19 @@ const Temp = () => {
               })}
             >
               <Tab.Screen name="Write" component={WriteContainer} />
-              <Tab.Screen name="Read" component={Binder} />
+              <Tab.Screen name="Read" component={Binder} options={{
+                headerRight: () => {
+                  return (
+                    <Button
+                      onPress={() => alert("header button pressed!")}
+                      // icon='account'
+                      theme={paperTheme}
+                      children={"Profile"}
+                      accessibilityLabel="Profile Button"
+                    />
+                  )
+                }
+              }} />
               <Tab.Screen name="Profile" component={Settings} />
             </Tab.Navigator>
           </NavigationContainer>

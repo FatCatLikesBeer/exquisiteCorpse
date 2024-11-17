@@ -127,7 +127,7 @@ const WriteContainer = () => {
               <Portal>
                 <Snackbar
                   theme={paperTheme}
-                  style={{ marginBottom: 60 }}
+                  style={{ position: 'relative', bottom: 55 }}
                   visible={snackBarVisible}
                   onDismiss={onDismissSnackBar}
                   action={{
