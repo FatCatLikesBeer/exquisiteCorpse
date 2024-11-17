@@ -57,19 +57,15 @@ const ReviewModal = ({ userFold, promptData, modalVisible, setModalVisible }) =>
             style={styles.closeButton}
             mode="contained-tonal"
           />
-          {
-            submittingFold
-              ?
-              <ActivityIndicator />
-              :
-              <Text style={[{ color: 'grey' }, styles.modalText]}>{promptData.content} <Text style={{ color: parsedTheme.colors.text }}>{userFold}</Text></Text>
-          }
+          <Text style={[{ color: 'grey' }, styles.modalText]}>
+            {promptData.content} <Text style={{ color: parsedTheme.colors.text }}>{userFold}</Text>
+          </Text>
           <Button
             onPress={submitFold}
             mode='contained-tonal'
             style={styles.submitButton}
           >
-            Submit
+            {submittingFold ? <ActivityIndicator /> : "Submit"}
           </Button>
         </View>
       </View>

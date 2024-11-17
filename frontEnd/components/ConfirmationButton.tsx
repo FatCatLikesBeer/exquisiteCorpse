@@ -8,10 +8,10 @@ import { Button, useTheme } from 'react-native-paper';
 import { LightModeContext } from "./context/LightModeContext";
 
 const ConfirmationButton = ({ pb, toggleModal, userFold, disableSubmit }) => {
+  const unauthenticatedLabel: string = "Login or Signup";
+  const authenticatedLabel: string = "Review";
   const paperTheme = useTheme();
   const { parsedTheme } = useContext(LightModeContext);
-  const unauthenticatedLabel: string = "Login or Signup";
-  const authenticatedLabel: string = "Review Fold";
   const [buttonLabel, setButtonLabel] = useState<string>(unauthenticatedLabel);
 
   function authChecker() {
@@ -37,6 +37,7 @@ const ConfirmationButton = ({ pb, toggleModal, userFold, disableSubmit }) => {
           <Text style={{ color: wordCountColor }}>{userFold.length}/400</Text>
         </View>
         <Button
+          accessibilityLabel="Review Button"
           key={paperTheme.dark ? "force" : "re-render"} // See (1) below
           theme={paperTheme}
           mode="contained-tonal"
