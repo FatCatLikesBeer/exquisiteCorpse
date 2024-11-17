@@ -2,31 +2,50 @@
 
 import React, { useState, useEffect, useContext } from "react";
 import * as Haptics from 'expo-haptics';
-import { View, Text, Keyboard, StyleSheet } from 'react-native';
+import { View, Text, Keyboard, StyleSheet, ActivityIndicator } from 'react-native';
 import { Button, useTheme } from 'react-native-paper';
 
 import { LightModeContext } from "./context/LightModeContext";
+import { collectionParser } from "../functions/fetchPromp";
 
-const ConfirmationButton = ({ pb, toggleModal, userFold, disableSubmit }) => {
+const ConfirmationButton = ({ pb, toggleModal, userFold, disableSubmit, promptData }) => {
   const unauthenticatedLabel: string = "Login or Signup";
   const authenticatedLabel: string = "Review";
   const paperTheme = useTheme();
   const { parsedTheme } = useContext(LightModeContext);
   const [buttonLabel, setButtonLabel] = useState<string>(unauthenticatedLabel);
+  const [submittingFold, setSubmittingFold] = useState<boolean>(false);
 
   function authChecker() {
     setButtonLabel(pb.authStore.isValid ? authenticatedLabel : unauthenticatedLabel);
   }
 
+  const submitFold = async () => {
+    const payload = {
+      content: userFold,
+      parent: promptData.id,
+      owner: pb.authStore.model.id,
+      collectionName: collectionParser(promptData.collectionName)
+    };
+    if (!promptData.collectionName) { delete payload.parent }
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+    console.log(payload);
+    setSubmittingFold(!submittingFold);
+  }
+
   useEffect(authChecker, []);
 
-  const submitFunction = () => {
+  const onSubmitFunction = () => {
     authChecker();
     toggleModal();
     Keyboard.dismiss();
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    console.log("WriteContainer, ConfirmationButton, submitFunction: auth state:", pb.authStore.model);
-  };
+    console.log("ConfirmationButton: On Press");
+  }
+
+  const onLongSubmitFunction = () => {
+    submitFold();
+  }
 
   const wordCountColor = userFold.length < 350 ? parsedTheme.colors.text : userFold.length > 390 ? 'red' : 'orange';
 
@@ -42,10 +61,11 @@ const ConfirmationButton = ({ pb, toggleModal, userFold, disableSubmit }) => {
           theme={paperTheme}
           mode="contained-tonal"
           style={{ flex: 2 }}
-          onPress={submitFunction}
+          onPress={onSubmitFunction}
+          onLongPress={onLongSubmitFunction}
           disabled={buttonLabel == authenticatedLabel && disableSubmit}
         >
-          {buttonLabel}
+          {submittingFold ? <ActivityIndicator /> : buttonLabel}
         </Button>
       </View>
     </View>
@@ -55,7 +75,7 @@ const ConfirmationButton = ({ pb, toggleModal, userFold, disableSubmit }) => {
 const styles = StyleSheet.create({
   wordCount: {
   }
-})
+});
 
 export default ConfirmationButton;
 

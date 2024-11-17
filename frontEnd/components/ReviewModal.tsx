@@ -14,6 +14,7 @@ import * as Haptics from 'expo-haptics';
 
 import { LightModeContext } from './context/LightModeContext';
 import PocketBaseContext from './context/PocketBaseContext';
+import { collectionParser } from "../functions/fetchPromp";
 
 const ReviewModal = ({ userFold, promptData, modalVisible, setModalVisible }) => {
   const { parsedTheme } = useContext(LightModeContext);
@@ -23,10 +24,12 @@ const ReviewModal = ({ userFold, promptData, modalVisible, setModalVisible }) =>
 
   const submitFold = async () => {
     const payload = {
-      foldContent: userFold,
-      parentFoldId: promptData.id,
-      ownerId: pb.authStore.model.id
+      content: userFold,
+      parent: promptData.id,
+      owner: pb.authStore.model.id,
+      collectionName: collectionParser(promptData.collectionName)
     };
+    if (!promptData.collectionName) { delete payload.parent }
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     console.log(payload);
     setSubmittingFold(!submittingFold);

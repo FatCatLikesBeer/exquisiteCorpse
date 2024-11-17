@@ -122,6 +122,7 @@ const WriteContainer = () => {
                 toggleModal={toggleModal}
                 userFold={userFold}
                 disableSubmit={disableSubmit}
+                promptData={promptData}
               />
               <Portal>
                 <Snackbar
