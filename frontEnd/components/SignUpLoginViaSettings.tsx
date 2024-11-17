@@ -13,10 +13,16 @@ const SignUpLogInViaSettings = () => {
   return (
     <View style={{ flexDirection: 'row' }}>
       <View style={styles.button}>
-        <Button theme={paperTheme} mode="contained-tonal">Sign Up</Button>
+        <Button
+          key={paperTheme.dark ? "force-sign" : "re-render-sign"} // See (1) below
+          mode="contained-tonal"
+        > Sign Up </Button>
       </View>
       <View style={styles.button}>
-        <Button theme={paperTheme} mode="contained-tonal">Login</Button>
+        <Button
+          key={paperTheme.dark ? "force-log" : "re-render-log"} // See (1) below
+          mode="contained-tonal"
+        > Login </Button>
       </View>
     </View>
   );
@@ -30,3 +36,5 @@ const styles = StyleSheet.create({
 });
 
 export default SignUpLogInViaSettings;
+
+// (1) This props is here to force render of the component when paperTheme changes

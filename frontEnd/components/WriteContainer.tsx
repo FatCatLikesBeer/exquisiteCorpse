@@ -11,7 +11,7 @@ import {
   ScrollView,
   RefreshControl,
 } from 'react-native';
-import { useTheme } from "react-native-paper";
+import { useTheme, Snackbar, Portal } from "react-native-paper";
 import * as Haptics from 'expo-haptics';
 
 import { LightModeContext } from "./context/LightModeContext";
@@ -29,6 +29,11 @@ const WriteContainer = () => {
   const pb = useContext(PocketBaseContext);
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [disableSubmit, setDisableSubmit] = useState<boolean>(true);
+  const [snackBarVisible, setSnackBarVisible] = useState<boolean>(false);
+  const [snackBarLabel, setSnackBarLabel] = useState<string>("Unable to fetch new prompt 😫");
+
+  const onToggleSnackBar = () => setSnackBarVisible(!snackBarVisible);
+  const onDismissSnackBar = () => setSnackBarVisible(false);
 
   // Disables submit button if userInput is empty
   useEffect(() => {
@@ -52,6 +57,7 @@ const WriteContainer = () => {
       })
       .catch((error) => {
         console.error("WriteContainer.tsx useEffect: @root", error);
+        onToggleSnackBar();
       });
 
     if (inputRef.current) {
@@ -59,7 +65,7 @@ const WriteContainer = () => {
     }
   }, []);
 
-  const parsePromptAndUserFold = (text) => {
+  const parsePromptAndUserFold = (text: string) => {
     const inputWithoutPrompt = text.slice(promptData.content?.length + 1);
     setUserFold(inputWithoutPrompt);
   }
@@ -71,6 +77,10 @@ const WriteContainer = () => {
         setPromptData(response);
         setUserFold("");
         setRefreshing(false);
+      })
+      .catch((error) => {
+        console.error("WriteContainer.tsx useEffect: @root", error);
+        onToggleSnackBar();
       })
       .finally(() => {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -110,10 +120,20 @@ const WriteContainer = () => {
               <ConfirmationButton
                 pb={pb}
                 toggleModal={toggleModal}
-                paperTheme={paperTheme}
                 userFold={userFold}
                 disableSubmit={disableSubmit}
               />
+              <Portal>
+                <Snackbar
+                  theme={paperTheme}
+                  style={{ marginBottom: 60 }}
+                  visible={snackBarVisible}
+                  onDismiss={onDismissSnackBar}
+                  action={{
+                    label: "Dismiss"
+                  }}
+                >{snackBarLabel}</Snackbar>
+              </Portal>
             </View>
           }
         </View>

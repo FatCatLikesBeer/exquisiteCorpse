@@ -40,6 +40,7 @@ const PaperLight = {  // React Native Paper
   ...MD3LightTheme,
   colors: {
     ...MD3LightTheme.colors,
+    // primary: 'salmon',
     primary: 'rgb(120, 69, 172)',
     primaryContainer: 'rgb(240, 219, 255)',
   },
