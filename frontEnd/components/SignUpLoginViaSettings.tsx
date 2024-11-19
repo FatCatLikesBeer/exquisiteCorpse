@@ -16,12 +16,14 @@ const SignUpLogInViaSettings = () => {
         <Button
           key={paperTheme.dark ? "force-sign" : "re-render-sign"} // See (1) below
           mode="contained-tonal"
+          onPress={() => alert("SignUpLogInViaSettings: Signup Pressed!")}
         > Sign Up </Button>
       </View>
       <View style={styles.button}>
         <Button
           key={paperTheme.dark ? "force-log" : "re-render-log"} // See (1) below
           mode="contained-tonal"
+          onPress={() => alert("SignUpLogInViaSettings: Login Pressed!")}
         > Login </Button>
       </View>
     </View>

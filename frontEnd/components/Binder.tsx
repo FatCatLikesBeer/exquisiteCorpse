@@ -44,7 +44,7 @@ const Binder = () => {
           })}
         </View>
       </ScrollView>
-      <FAB icon='plus' style={styles.fab} onPress={() => console.log("Binder.tsx: FAB PRESSED")} mode='elevated' />
+      <FAB icon='plus' style={styles.fab} onPress={() => alert("Binder.tsx: FAB PRESSED")} mode='elevated' />
     </View>
   );
 }

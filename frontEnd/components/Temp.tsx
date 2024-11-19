@@ -6,6 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts } from 'expo-font';
 import { PaperProvider, MD3DarkTheme, MD3LightTheme, Button } from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useNavigation } from "@react-navigation/native";
 
 import Binder from './Binder';
 import Settings from './Settings';
@@ -54,6 +56,8 @@ const PaperDark = {  // React Native Paper
   }
 };
 
+const Stack = createNativeStackNavigator();
+
 const Temp = () => {
   const [loaded, error] = useFonts({
     "BodoniMada": require('../assets/fonts/BodoniModa-VariableFont_opsz,wght.ttf'),
@@ -99,38 +103,54 @@ const Temp = () => {
         <FontFamilyContext.Provider value={""}>
           <NavigationContainer theme={parsedTheme}>
             <StatusBar />
-            <Tab.Navigator
-              screenOptions={({ route }) => ({
-                tabBarHideOnKeyboard: true,
-                tabBarIcon: ({ color, size }) => {
-                  const icons = {
-                    Read: "book-open-page-variant",
-                    Write: "file-edit",
-                    Profile: "account",
-                  };
-
-                  return (
-                    <MaterialCommunityIcons name={icons[route.name]} color={color} size={size} />
-                  )
-                }
-              })}
-            >
-              <Tab.Screen name="Write" component={WriteContainer} />
-              <Tab.Screen name="Read" component={Binder} options={{
+            <Stack.Navigator>
+              <Stack.Screen name="FourFolds" component={Binder} options={({ navigation }) => ({
                 headerRight: () => {
                   return (
                     <Button
-                      onPress={() => alert("header button pressed!")}
+                      onPress={() => navigation.navigate('Settings')}
                       // icon='account'
+                      children={"Account"}
                       theme={paperTheme}
-                      children={"Profile"}
-                      accessibilityLabel="Profile Button"
+                      accessibilityLabel="Account Prefrences and Settings"
                     />
-                  )
+                  );
                 }
-              }} />
-              <Tab.Screen name="Profile" component={Settings} />
-            </Tab.Navigator>
+              })} />
+              <Stack.Screen name="Settings" component={Settings} />
+            </Stack.Navigator>
+            {/* <Tab.Navigator */}
+            {/*   screenOptions={({ route }) => ({ */}
+            {/*     tabBarHideOnKeyboard: true, */}
+            {/*     tabBarIcon: ({ color, size }) => { */}
+            {/*       const icons = { */}
+            {/*         Read: "book-open-page-variant", */}
+            {/*         Write: "file-edit", */}
+            {/*         Profile: "account", */}
+            {/*       }; */}
+            {/**/}
+            {/*       return ( */}
+            {/*         <MaterialCommunityIcons name={icons[route.name]} color={color} size={size} /> */}
+            {/*       ) */}
+            {/*     } */}
+            {/*   })} */}
+            {/* > */}
+            {/*   <Tab.Screen name="Write" component={WriteContainer} /> */}
+            {/*   <Tab.Screen name="Read" component={Binder} options={{ */}
+            {/*     headerRight: () => { */}
+            {/*       return ( */}
+            {/*         <Button */}
+            {/*           onPress={() => alert("header button pressed!")} */}
+            {/*           // icon='account' */}
+            {/*           theme={paperTheme} */}
+            {/*           children={"Profile"} */}
+            {/*           accessibilityLabel="Profile Button" */}
+            {/*         /> */}
+            {/*       ) */}
+            {/*     } */}
+            {/*   }} /> */}
+            {/*   <Tab.Screen name="Profile Settings" component={Settings} /> */}
+            {/* </Tab.Navigator> */}
           </NavigationContainer>
         </FontFamilyContext.Provider>
       </LightModeContext.Provider >

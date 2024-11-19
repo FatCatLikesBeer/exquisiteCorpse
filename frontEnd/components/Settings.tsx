@@ -15,7 +15,7 @@ const SettingsGroup = (props) => {
   );
 }
 
-const Settings = () => {
+const Settings = ({ navigation }) => {
   const { parsedTheme } = useContext(LightModeContext);
   const pb = useContext(PocketBaseContext);
 
