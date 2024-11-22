@@ -1,8 +1,14 @@
 // AuthModals.tsx
+// TODO: text input error checking: email format, email available, password confirmation
+// TODO: Make signup modal avoid keyboard
+// TODO: pressing return/enter on 'Confirm Password' will submit form
+// TODO: create handle Submit function
+// TODO: Handle submit function need to handle errors: 400, 403, 408, 500
+// TODO: make "Submit" button actually signup user
 
-import React, { useContext } from "react";
-import { Modal, View, Text, StyleSheet, TextInput } from 'react-native'
-import { Button, IconButton, ActivityIndicator } from 'react-native-paper';
+import React, { useState, useContext, useRef } from "react";
+import { Modal, View, Text, StyleSheet } from 'react-native'
+import { Button, IconButton, ActivityIndicator, TextInput, useTheme } from 'react-native-paper';
 
 import { LightModeContext } from "./context/LightModeContext";
 const closeButtonIcon = require('../assets/close.png');
@@ -27,14 +33,75 @@ const ModalTemplate = (props) => {
         </View>
       </View>
     </Modal>
-  )
+  );
 }
 
 const SignUpModal = ({ signUpVisible, toggle }) => {
   const { parsedTheme } = useContext(LightModeContext);
+  const [email, setEmail] = useState<string>("");
+  const [firstPassword, setFirstPassword] = useState<string>("");
+  const [secondPassword, setSecondPassword] = useState<string>("");
+  const paperTheme = useTheme();
+  const signUpFirstPassword = useRef(null);
+  const signUpSecondPassword = useRef(null);
+
   return (
     <ModalTemplate visible={signUpVisible} toggle={toggle}>
-      <Text style={[{ color: parsedTheme.colors.text }, styles.header]}>SignUp Modal</Text>
+      <Text style={[{ color: parsedTheme.colors.text }, styles.modalHeader]}>SignUp</Text>
+      <TextInput
+        accessibilityLabel="Sign Up Email"
+        autoFocus={true}
+        value={email}
+        onChangeText={setEmail}
+        label="Email"
+        autoComplete='email'
+        onSubmitEditing={() => signUpFirstPassword.current?.focus()}
+        style={[{ color: parsedTheme.colors.text }, styles.inputField]}
+        spellCheck={false}
+        autoCapitalize="none"
+        autoCorrect={false}
+        mode="outlined"
+        theme={paperTheme}
+      />
+      <TextInput
+        accessibilityLabel="Sign Up Password"
+        value={firstPassword}
+        onChangeText={setFirstPassword}
+        label="Password"
+        autoComplete="password"
+        secureTextEntry={true}
+        ref={signUpFirstPassword}
+        onSubmitEditing={() => signUpSecondPassword.current?.focus()}
+        style={[{ color: parsedTheme.colors.text }, styles.inputField]}
+        spellCheck={false}
+        autoCapitalize="none"
+        autoCorrect={false}
+        mode="outlined"
+        theme={paperTheme}
+      />
+      <TextInput
+        accessibilityLabel="Confirm Sign Up Password"
+        value={secondPassword}
+        onChangeText={setSecondPassword}
+        label="Confirm Password"
+        autoComplete="password"
+        secureTextEntry={true}
+        ref={signUpSecondPassword}
+        style={[{ color: parsedTheme.colors.text }, styles.inputField]}
+        spellCheck={false}
+        autoCapitalize="none"
+        autoCorrect={false}
+        mode="outlined"
+        theme={paperTheme}
+      />
+      <View style={styles.submitButton}>
+        <Button
+          accessibilityLabel="Submit Button"
+          key={paperTheme.dark ? "force" : "re-render"} // See (1) below
+          theme={paperTheme}
+          mode="contained-tonal"
+        >Submit</Button>
+      </View>
     </ModalTemplate>
   );
 }
@@ -43,19 +110,24 @@ const LogInModal = ({ loginVisible, toggle }) => {
   const { parsedTheme } = useContext(LightModeContext);
   return (
     <ModalTemplate visible={loginVisible} toggle={toggle}>
-      <Text style={[{ color: parsedTheme.colors.text }, styles.header]}>Login Modal</Text>
+      <Text style={[{ color: parsedTheme.colors.text }, styles.modalHeader]}>Login Modal</Text>
     </ModalTemplate>
   )
 }
 
 const styles = StyleSheet.create({
-  header: {
+  inputField: {
+    marginTop: 8,
+    marginBottom: 8,
+    width: "90%",
+  },
+  modalHeader: {
     fontSize: 40,
     fontWeight: 'bold',
+    marginBottom: 20,
   },
   submitButton: {
-    position: 'absolute',
-    bottom: 20,
+    marginTop: 30,
   },
   closeButton: {
     position: 'absolute',
@@ -71,12 +143,14 @@ const styles = StyleSheet.create({
   },
   modalView: {
     width: '90%',
-    height: 600,
     margin: 8,
     borderColor: 'rgb(120, 69, 172)',
     borderWidth: 1,
     borderRadius: 10,
-    padding: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 40,
+    paddingBottom: 40,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
