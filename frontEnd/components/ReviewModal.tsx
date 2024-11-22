@@ -1,5 +1,5 @@
 // ReviewModal.tsx
-import React, { useContext, useRef, useEffect, useState } from 'react';
+import React, { useContext, useRef, useState } from 'react';
 import {
   Modal,
   Text,

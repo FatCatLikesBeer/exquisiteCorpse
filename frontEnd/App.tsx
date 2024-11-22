@@ -33,8 +33,8 @@ const App = () => {
 
 export default App;
 
-// TODO: Remove the navigation tabs. Profile & WriteComponents will be Navigation stacks/modals
-// TODO: add an inline login / signup component every 3, 5, or 7 sheets
+// TODO: Create basic authentication in Settings Component
+// TODO: Add an inline login / signup component every 3, 5, or 7 sheets
 // TODO: Modal dissapears on successful submission
 // TODO: Toast appears on successful/unsuccessful submission
 //

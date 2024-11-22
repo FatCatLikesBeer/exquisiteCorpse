@@ -1,31 +1,50 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import { View, StyleSheet, Text } from 'react-native';
 import { Button, useTheme } from "react-native-paper";
 
 import { LightModeContext } from "./context/LightModeContext";
 import PocketBaseContext from './context/PocketBaseContext';
+import { SignUpModal, LogInModal } from "./AuthModals";
 
 const SignUpLogInViaSettings = () => {
   const { parsedTheme } = useContext(LightModeContext);
   const pb = useContext(PocketBaseContext);
   const paperTheme = useTheme();
+  const [signUpVisible, setSignUpVisible] = useState<boolean>(false);
+  const [loginVisible, setLoginVisible] = useState<boolean>(false);
+
+  function toggleSignUpModal() {
+    setSignUpVisible(!signUpVisible);
+  }
+
+  function toggleLoginModal() {
+    setLoginVisible(!loginVisible);
+  }
 
   return (
-    <View style={{ flexDirection: 'row' }}>
-      <View style={styles.button}>
-        <Button
-          key={paperTheme.dark ? "force-sign" : "re-render-sign"} // See (1) below
-          mode="contained-tonal"
-          onPress={() => alert("SignUpLogInViaSettings: Signup Pressed!")}
-        > Sign Up </Button>
-      </View>
-      <View style={styles.button}>
-        <Button
-          key={paperTheme.dark ? "force-log" : "re-render-log"} // See (1) below
-          mode="contained-tonal"
-          onPress={() => alert("SignUpLogInViaSettings: Login Pressed!")}
-        > Login </Button>
-      </View>
+    <View>
+      {pb.authStore.isValid ?
+        <Text style={{ color: parsedTheme.colors.text }}>Logout</Text>
+        :
+        <View style={{ flexDirection: 'row' }}>
+          <View style={styles.button}>
+            <Button
+              key={paperTheme.dark ? "force-sign" : "re-render-sign"} // See (1) below
+              mode="contained-tonal"
+              onPress={toggleSignUpModal}
+            > Sign Up </Button>
+          </View>
+          <View style={styles.button}>
+            <Button
+              key={paperTheme.dark ? "force-log" : "re-render-log"} // See (1) below
+              mode="contained-tonal"
+              onPress={toggleLoginModal}
+            > Login </Button>
+          </View>
+        </View>
+      }
+      <SignUpModal signUpVisible={signUpVisible} toggle={toggleSignUpModal} />
+      <LogInModal loginVisible={loginVisible} toggle={toggleLoginModal} />
     </View>
   );
 }
