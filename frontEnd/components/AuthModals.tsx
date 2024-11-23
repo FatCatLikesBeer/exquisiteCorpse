@@ -14,7 +14,7 @@ import validate from 'email-validator';
 import { LightModeContext } from "./context/LightModeContext";
 const closeButtonIcon = require('../assets/close.png');
 
-const ModalTemplate = ({ visible, toggle, children }) => {
+const ModalTemplate = ({ visible, toggle, children }: { visible: boolean; toggle: any; children: any }) => {
   const { parsedTheme } = useContext(LightModeContext);
   return (
     <Modal
@@ -37,7 +37,7 @@ const ModalTemplate = ({ visible, toggle, children }) => {
   );
 }
 
-const SignUpModal = ({ signUpVisible, toggle }) => {
+const SignUpModal = ({ signUpVisible, toggle }: { signUpVisible: boolean; toggle: any }) => {
   const { parsedTheme } = useContext(LightModeContext);
   const [email, setEmail] = useState<string>("");
   const [emailIsValid, setEmailIsValid] = useState<boolean>(true);
@@ -136,7 +136,7 @@ const SignUpModal = ({ signUpVisible, toggle }) => {
   );
 }
 
-const LogInModal = ({ loginVisible, toggle }) => {
+const LogInModal = ({ loginVisible, toggle }: { loginVisible: boolean; toggle: any }) => {
   const { parsedTheme } = useContext(LightModeContext);
   return (
     <ModalTemplate visible={loginVisible} toggle={toggle}>
