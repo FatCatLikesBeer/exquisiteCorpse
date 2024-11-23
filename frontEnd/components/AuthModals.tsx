@@ -6,7 +6,7 @@
 // TODO: Handle submit function need to handle errors: 400, 403, 408, 500
 // TODO: make "Submit" button actually signup user
 
-import React, { useState, useContext, useRef, useEffect } from "react";
+import React, { useState, useContext, useRef } from "react";
 import { Modal, View, Text, StyleSheet } from 'react-native'
 import { Button, IconButton, TextInput, useTheme } from 'react-native-paper';
 import validate from 'email-validator';
@@ -14,11 +14,11 @@ import validate from 'email-validator';
 import { LightModeContext } from "./context/LightModeContext";
 const closeButtonIcon = require('../assets/close.png');
 
-const ModalTemplate = (props: any) => {
+const ModalTemplate = ({ visible, toggle, children }) => {
   const { parsedTheme } = useContext(LightModeContext);
   return (
     <Modal
-      visible={props.visible}
+      visible={visible}
       transparent={true}
       animationType='slide'
     >
@@ -26,11 +26,11 @@ const ModalTemplate = (props: any) => {
         <View style={[{ backgroundColor: parsedTheme.colors.background }, styles.modalView]}>
           <IconButton
             icon={closeButtonIcon}
-            onPress={props.toggle}
+            onPress={toggle}
             style={styles.closeButton}
             mode="contained-tonal"
           />
-          {props.children}
+          {children}
         </View>
       </View>
     </Modal>
@@ -46,10 +46,10 @@ const SignUpModal = ({ signUpVisible, toggle }) => {
   const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true);
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
   const paperTheme = useTheme();
-  const signUpFirstPassword = useRef(null);
-  const signUpSecondPassword = useRef(null);
+  const signUpFirstPassword = useRef<any>(null);
+  const signUpSecondPassword = useRef<any>(null);
 
-  const closeButtonFunction = () => {
+  const closeButtonFunction = (): void => {
     toggle();
     setEmailIsValid(true);
     setPasswordsMatch(true);

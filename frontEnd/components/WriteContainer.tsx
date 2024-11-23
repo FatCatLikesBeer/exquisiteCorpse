@@ -48,7 +48,7 @@ const WriteContainer = () => {
 
   });
 
-  const inputRef = useRef(null);
+  const inputRef = useRef<any>(null);
 
   useEffect(() => {
     fetchPrompt(pb)
