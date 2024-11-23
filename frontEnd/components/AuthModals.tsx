@@ -6,14 +6,15 @@
 // TODO: Handle submit function need to handle errors: 400, 403, 408, 500
 // TODO: make "Submit" button actually signup user
 
-import React, { useState, useContext, useRef } from "react";
+import React, { useState, useContext, useRef, useEffect } from "react";
 import { Modal, View, Text, StyleSheet } from 'react-native'
-import { Button, IconButton, ActivityIndicator, TextInput, useTheme } from 'react-native-paper';
+import { Button, IconButton, TextInput, useTheme } from 'react-native-paper';
+import validate from 'email-validator';
 
 import { LightModeContext } from "./context/LightModeContext";
 const closeButtonIcon = require('../assets/close.png');
 
-const ModalTemplate = (props) => {
+const ModalTemplate = (props: any) => {
   const { parsedTheme } = useContext(LightModeContext);
   return (
     <Modal
@@ -39,21 +40,35 @@ const ModalTemplate = (props) => {
 const SignUpModal = ({ signUpVisible, toggle }) => {
   const { parsedTheme } = useContext(LightModeContext);
   const [email, setEmail] = useState<string>("");
+  const [emailIsValid, setEmailIsValid] = useState<boolean>(true);
   const [firstPassword, setFirstPassword] = useState<string>("");
   const [secondPassword, setSecondPassword] = useState<string>("");
+  const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true);
+  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
   const paperTheme = useTheme();
   const signUpFirstPassword = useRef(null);
   const signUpSecondPassword = useRef(null);
 
+  const closeButtonFunction = () => {
+    toggle();
+    setEmailIsValid(true);
+    setPasswordsMatch(true);
+    setEmail("");
+    setFirstPassword("");
+    setSecondPassword("");
+    setPasswordVisible(false);
+  }
+
   return (
-    <ModalTemplate visible={signUpVisible} toggle={toggle}>
+    <ModalTemplate visible={signUpVisible} toggle={closeButtonFunction}>
       <Text style={[{ color: parsedTheme.colors.text }, styles.modalHeader]}>SignUp</Text>
       <TextInput
+        onBlur={() => { setEmailIsValid(emailValidator(email)) }}
         accessibilityLabel="Sign Up Email"
         autoFocus={true}
         value={email}
         onChangeText={setEmail}
-        label="Email"
+        label={emailIsValid ? "Email" : "Invalid Email"}
         autoComplete='email'
         onSubmitEditing={() => signUpFirstPassword.current?.focus()}
         style={[{ color: parsedTheme.colors.text }, styles.inputField]}
@@ -61,15 +76,17 @@ const SignUpModal = ({ signUpVisible, toggle }) => {
         autoCapitalize="none"
         autoCorrect={false}
         mode="outlined"
+        error={!emailIsValid ? true : false}
+        keyboardType="email-address"
         theme={paperTheme}
       />
       <TextInput
         accessibilityLabel="Sign Up Password"
         value={firstPassword}
         onChangeText={setFirstPassword}
-        label="Password"
+        label={passwordsMatch ? "Password" : "Password Mismatch"}
         autoComplete="password"
-        secureTextEntry={true}
+        secureTextEntry={!passwordVisible}
         ref={signUpFirstPassword}
         onSubmitEditing={() => signUpSecondPassword.current?.focus()}
         style={[{ color: parsedTheme.colors.text }, styles.inputField]}
@@ -78,14 +95,21 @@ const SignUpModal = ({ signUpVisible, toggle }) => {
         autoCorrect={false}
         mode="outlined"
         theme={paperTheme}
+        error={!passwordsMatch}
+        placeholder="8 Character Minimum"
+        right={<TextInput.Icon
+          icon={passwordVisible ? "eye-off-outline" : "eye"}
+          onPress={() => { setPasswordVisible(!passwordVisible) }}
+        />}
       />
       <TextInput
         accessibilityLabel="Confirm Sign Up Password"
         value={secondPassword}
         onChangeText={setSecondPassword}
-        label="Confirm Password"
+        label={passwordsMatch ? "Confirm Password" : "Password Mismatch"}
+        onBlur={() => { setPasswordsMatch(passwordCompairator(firstPassword, secondPassword)) }}
         autoComplete="password"
-        secureTextEntry={true}
+        secureTextEntry={!passwordVisible}
         ref={signUpSecondPassword}
         style={[{ color: parsedTheme.colors.text }, styles.inputField]}
         spellCheck={false}
@@ -93,6 +117,12 @@ const SignUpModal = ({ signUpVisible, toggle }) => {
         autoCorrect={false}
         mode="outlined"
         theme={paperTheme}
+        error={!passwordsMatch}
+        placeholder="Confirm Password"
+        right={<TextInput.Icon
+          icon={passwordVisible ? "eye-off-outline" : "eye"}
+          onPress={() => { setPasswordVisible(!passwordVisible) }}
+        />}
       />
       <View style={styles.submitButton}>
         <Button
@@ -169,5 +199,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 });
+
+function emailValidator(email: string): boolean {
+  return validate.validate(email);
+}
+
+function passwordCompairator(password1: string, password2: string): boolean {
+  return password1 === password2;
+}
+
+function passwordLengthChecker(password: string): boolean {
+  return password.length >= 8;
+}
 
 export { SignUpModal, LogInModal };

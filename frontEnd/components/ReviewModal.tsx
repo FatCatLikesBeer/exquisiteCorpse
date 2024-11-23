@@ -1,4 +1,5 @@
 // ReviewModal.tsx
+
 import React, { useContext, useRef, useState } from 'react';
 import {
   Modal,
@@ -26,7 +27,7 @@ const ReviewModal = ({ userFold, promptData, modalVisible, setModalVisible }) =>
     const payload = {
       content: userFold,
       parent: promptData.id,
-      owner: pb.authStore.model.id,
+      owner: pb.authStore.model?.id,
       collectionName: collectionParser(promptData.collectionName)
     };
     if (!promptData.collectionName) { delete payload.parent }
