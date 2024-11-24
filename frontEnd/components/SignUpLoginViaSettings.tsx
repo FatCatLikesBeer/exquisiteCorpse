@@ -43,8 +43,8 @@ const SignUpLogInViaSettings = () => {
           </View>
         </View>
       }
-      <SignUpModal signUpVisible={signUpVisible} toggle={toggleSignUpModal} />
-      <LogInModal loginVisible={loginVisible} toggle={toggleLoginModal} />
+      <SignUpModal signUpVisible={signUpVisible} toggle={toggleSignUpModal} pb={pb} />
+      <LogInModal loginVisible={loginVisible} toggle={toggleLoginModal} pb={pb} />
     </View>
   );
 }

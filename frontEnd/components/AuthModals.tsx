@@ -1,15 +1,16 @@
 // AuthModals.tsx
-// TODO: text input error checking: email format, email available, password confirmation
+// TODO: text input error checking: email availability, password length
 // TODO: Make signup modal avoid keyboard
 // TODO: pressing return/enter on 'Confirm Password' will submit form
 // TODO: create handle Submit function
 // TODO: Handle submit function need to handle errors: 400, 403, 408, 500
 // TODO: make "Submit" button actually signup user
 
-import React, { useState, useContext, useRef } from "react";
-import { Modal, View, Text, StyleSheet } from 'react-native'
+import React, { useState, useContext, useRef, useEffect } from "react";
+import { Modal, View, Text, StyleSheet, ScrollView } from 'react-native'
 import { Button, IconButton, TextInput, useTheme } from 'react-native-paper';
 import validate from 'email-validator';
+import PocketBase from 'pocketbase';
 
 import { LightModeContext } from "./context/LightModeContext";
 const closeButtonIcon = require('../assets/close.png');
@@ -37,8 +38,9 @@ const ModalTemplate = ({ visible, toggle, children }: { visible: boolean; toggle
   );
 }
 
-const SignUpModal = ({ signUpVisible, toggle }: { signUpVisible: boolean; toggle: any }) => {
+const SignUpModal = ({ signUpVisible, toggle, pb }: { signUpVisible: boolean; toggle: any; pb: PocketBase }) => {
   const { parsedTheme } = useContext(LightModeContext);
+  const [userName, setUserName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [emailIsValid, setEmailIsValid] = useState<boolean>(true);
   const [firstPassword, setFirstPassword] = useState<string>("");
@@ -46,11 +48,14 @@ const SignUpModal = ({ signUpVisible, toggle }: { signUpVisible: boolean; toggle
   const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true);
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
   const paperTheme = useTheme();
+  const emailRef = useRef<any>(null);
   const signUpFirstPassword = useRef<any>(null);
   const signUpSecondPassword = useRef<any>(null);
+  const submitButton = useRef<any>(null);
 
   const closeButtonFunction = (): void => {
     toggle();
+    setUserName("");
     setEmailIsValid(true);
     setPasswordsMatch(true);
     setEmail("");
@@ -61,15 +66,32 @@ const SignUpModal = ({ signUpVisible, toggle }: { signUpVisible: boolean; toggle
 
   return (
     <ModalTemplate visible={signUpVisible} toggle={closeButtonFunction}>
-      <Text style={[{ color: parsedTheme.colors.text }, styles.modalHeader]}>SignUp</Text>
+      <Text style={[{ color: parsedTheme.colors.text }, styles.modalHeader]}>Sign Up</Text>
       <TextInput
-        onBlur={() => { setEmailIsValid(emailValidator(email)) }}
-        accessibilityLabel="Sign Up Email"
+        accessibilityLabel="Sign Up User Name"
         autoFocus={true}
+        value={userName}
+        onChangeText={setUserName}
+        label="User Name"
+        autoComplete='username'
+        onSubmitEditing={() => emailRef.current?.focus()}
+        style={[{ color: parsedTheme.colors.text }, styles.inputField]}
+        spellCheck={false}
+        autoCapitalize="none"
+        autoCorrect={false}
+        mode="outlined"
+        theme={paperTheme}
+      />
+      <TextInput
+        onBlur={() => {
+          setEmailIsValid(emailValidator(email));
+        }}
+        accessibilityLabel="Sign Up Email"
         value={email}
         onChangeText={setEmail}
         label={emailIsValid ? "Email" : "Invalid Email"}
         autoComplete='email'
+        ref={emailRef}
         onSubmitEditing={() => signUpFirstPassword.current?.focus()}
         style={[{ color: parsedTheme.colors.text }, styles.inputField]}
         spellCheck={false}
@@ -100,6 +122,7 @@ const SignUpModal = ({ signUpVisible, toggle }: { signUpVisible: boolean; toggle
         right={<TextInput.Icon
           icon={passwordVisible ? "eye-off-outline" : "eye"}
           onPress={() => { setPasswordVisible(!passwordVisible) }}
+          accessibilityLabel="Show/Hide password text"
         />}
       />
       <TextInput
@@ -111,6 +134,7 @@ const SignUpModal = ({ signUpVisible, toggle }: { signUpVisible: boolean; toggle
         autoComplete="password"
         secureTextEntry={!passwordVisible}
         ref={signUpSecondPassword}
+        onSubmitEditing={() => submitButton.current?.focus()}
         style={[{ color: parsedTheme.colors.text }, styles.inputField]}
         spellCheck={false}
         autoCapitalize="none"
@@ -122,6 +146,7 @@ const SignUpModal = ({ signUpVisible, toggle }: { signUpVisible: boolean; toggle
         right={<TextInput.Icon
           icon={passwordVisible ? "eye-off-outline" : "eye"}
           onPress={() => { setPasswordVisible(!passwordVisible) }}
+          accessibilityLabel="Show/Hide password text"
         />}
       />
       <View style={styles.submitButton}>
@@ -130,13 +155,16 @@ const SignUpModal = ({ signUpVisible, toggle }: { signUpVisible: boolean; toggle
           key={paperTheme.dark ? "force" : "re-render"} // See (1) below
           theme={paperTheme}
           mode="contained-tonal"
-        >Submit</Button>
+          contentStyle={{ paddingHorizontal: 12 }}
+        >
+          Submit
+        </Button>
       </View>
     </ModalTemplate>
   );
 }
 
-const LogInModal = ({ loginVisible, toggle }: { loginVisible: boolean; toggle: any }) => {
+const LogInModal = ({ loginVisible, toggle, pb }: { loginVisible: boolean; toggle: any; pb: PocketBase }) => {
   const { parsedTheme } = useContext(LightModeContext);
   return (
     <ModalTemplate visible={loginVisible} toggle={toggle}>
@@ -152,9 +180,9 @@ const styles = StyleSheet.create({
     width: "90%",
   },
   modalHeader: {
-    fontSize: 40,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 14,
   },
   submitButton: {
     marginTop: 30,
@@ -173,13 +201,13 @@ const styles = StyleSheet.create({
   },
   modalView: {
     width: '90%',
-    margin: 8,
+    marginTop: -100,
     borderColor: 'rgb(120, 69, 172)',
     borderWidth: 1,
     borderRadius: 10,
     paddingLeft: 20,
     paddingRight: 20,
-    paddingTop: 40,
+    paddingTop: 28,
     paddingBottom: 40,
     alignItems: 'center',
     justifyContent: 'center',

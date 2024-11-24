@@ -4,7 +4,7 @@
 // returns undefined, signaling the first fold of a new sheet
 
 import PocketBase from 'pocketbase';
-const foldCollections: Array<string> = [null, 'foldFirst', 'foldSecond', 'foldThird'];
+const foldCollections: Array<string> = ["starterFold", 'foldFirst', 'foldSecond', 'foldThird'];
 
 export const fetchPrompt = async (pb: PocketBase) => {
   let result: any = { content: undefined, collectionName: undefined };
@@ -19,7 +19,7 @@ export const fetchPrompt = async (pb: PocketBase) => {
   return result;
 }
 
-export function collectionParser(parentCollection) {
+export function collectionParser(parentCollection: string) {
   let collectionName: string;
   switch (parentCollection) {
     case 'foldFirst':

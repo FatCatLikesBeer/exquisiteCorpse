@@ -5,13 +5,10 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts } from 'expo-font';
 import { PaperProvider, MD3DarkTheme, MD3LightTheme, Button } from 'react-native-paper';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useNavigation } from "@react-navigation/native";
 
 import Binder from './Binder';
 import Settings from './Settings';
-import WriteContainer from "./WriteContainer";
 import themeParser from "../functions/themeParser";
 import type { themeType } from '../functions/themeParser';
 
@@ -72,9 +69,9 @@ const Temp = () => {
   // Get stored theme on load
   useEffect(() => {
     AsyncStorage.getItem(KEY_USER_STORED_THEME)
-      .then((storedTheme: themeType) => {
-        if (!storedTheme) { storedTheme = 'light'; }
-        setUserSelectedTheme(storedTheme);
+      .then((storedTheme: string | null) => {
+        const themeFromAsyncStorage: themeType = (storedTheme as themeType) || 'light';
+        setUserSelectedTheme(themeFromAsyncStorage);
         setParsedTheme(themeParser(userSelectedTheme) == 'light' ? MyDefaultTheme : MyDarkTheme);
       });
   }, []);
@@ -109,7 +106,6 @@ const Temp = () => {
                   return (
                     <Button
                       onPress={() => navigation.navigate('Settings')}
-                      // icon='account'
                       children={"Account"}
                       theme={paperTheme}
                       accessibilityLabel="Account Prefrences and Settings"

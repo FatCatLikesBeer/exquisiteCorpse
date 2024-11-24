@@ -7,15 +7,15 @@ import SignUpLogInViaSettings from "./SignUpLoginViaSettings";
 
 import PocketBaseContext from './context/PocketBaseContext';
 
-const SettingsGroup = (props) => {
+const SettingsGroup = ({ children }: { children: any }) => {
   return (
     <View style={styles.settingsGroup}>
-      {props.children}
+      {children}
     </View>
   );
 }
 
-const Settings = ({ navigation }) => {
+const Settings = ({ navigation }: { navigation: any }) => {
   const { parsedTheme } = useContext(LightModeContext);
   const pb = useContext(PocketBaseContext);
 
