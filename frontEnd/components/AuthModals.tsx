@@ -1,13 +1,13 @@
 // AuthModals.tsx
-// TODO: text input error checking: email availability, password length
 // TODO: Make signup modal avoid keyboard
 // TODO: pressing return/enter on 'Confirm Password' will submit form
 // TODO: create handle Submit function
+// TODO: text input error checking: email availability
 // TODO: Handle submit function need to handle errors: 400, 403, 408, 500
 // TODO: make "Submit" button actually signup user
 
 import React, { useState, useContext, useRef, useEffect } from "react";
-import { Modal, View, Text, StyleSheet, ScrollView } from 'react-native'
+import { Modal, View, Text, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native'
 import { Button, IconButton, TextInput, useTheme } from 'react-native-paper';
 import validate from 'email-validator';
 import PocketBase from 'pocketbase';
@@ -23,17 +23,22 @@ const ModalTemplate = ({ visible, toggle, children }: { visible: boolean; toggle
       transparent={true}
       animationType='slide'
     >
-      <View style={styles.centeredView}>
-        <View style={[{ backgroundColor: parsedTheme.colors.background }, styles.modalView]}>
-          <IconButton
-            icon={closeButtonIcon}
-            onPress={toggle}
-            style={styles.closeButton}
-            mode="contained-tonal"
-          />
-          {children}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? "padding" : 'height'}
+        style={{ flex: 1 }}
+      >
+        <View style={styles.centeredView}>
+          <View style={[{ backgroundColor: parsedTheme.colors.background }, styles.modalView]}>
+            <IconButton
+              icon={closeButtonIcon}
+              onPress={toggle}
+              style={styles.closeButton}
+              mode="contained-tonal"
+            />
+            {children}
+          </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </Modal>
   );
 }
@@ -47,6 +52,7 @@ const SignUpModal = ({ signUpVisible, toggle, pb }: { signUpVisible: boolean; to
   const [secondPassword, setSecondPassword] = useState<string>("");
   const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true);
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
+  const [passwordIsLongEnough, setPasswordIsLongEnough] = useState<boolean>(true);
   const paperTheme = useTheme();
   const emailRef = useRef<any>(null);
   const signUpFirstPassword = useRef<any>(null);
@@ -62,7 +68,14 @@ const SignUpModal = ({ signUpVisible, toggle, pb }: { signUpVisible: boolean; to
     setFirstPassword("");
     setSecondPassword("");
     setPasswordVisible(false);
+    setPasswordIsLongEnough(true);
   }
+
+  useEffect(() => {
+    if (passwordIsLongEnough) {
+    } else {
+    }
+  }, [passwordIsLongEnough]);
 
   return (
     <ModalTemplate visible={signUpVisible} toggle={closeButtonFunction}>
@@ -124,6 +137,9 @@ const SignUpModal = ({ signUpVisible, toggle, pb }: { signUpVisible: boolean; to
           onPress={() => { setPasswordVisible(!passwordVisible) }}
           accessibilityLabel="Show/Hide password text"
         />}
+        onBlur={() => {
+          setPasswordIsLongEnough(passwordLongerThanEight(firstPassword));
+        }}
       />
       <TextInput
         accessibilityLabel="Confirm Sign Up Password"
@@ -156,8 +172,9 @@ const SignUpModal = ({ signUpVisible, toggle, pb }: { signUpVisible: boolean; to
           theme={paperTheme}
           mode="contained-tonal"
           contentStyle={{ paddingHorizontal: 12 }}
+          disabled={!passwordIsLongEnough}
         >
-          Submit
+          {passwordIsLongEnough ? "Submit" : "Password Too Short"}
         </Button>
       </View>
     </ModalTemplate>
@@ -182,10 +199,11 @@ const styles = StyleSheet.create({
   modalHeader: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 14,
+    marginTop: 8,
+    marginBottom: 8,
   },
   submitButton: {
-    marginTop: 30,
+    marginTop: 16,
   },
   closeButton: {
     position: 'absolute',
@@ -201,14 +219,14 @@ const styles = StyleSheet.create({
   },
   modalView: {
     width: '90%',
-    marginTop: -100,
+    marginBottom: -50,
     borderColor: 'rgb(120, 69, 172)',
-    borderWidth: 1,
+    borderWidth: 2,
     borderRadius: 10,
     paddingLeft: 20,
     paddingRight: 20,
-    paddingTop: 28,
-    paddingBottom: 40,
+    paddingTop: 8,
+    paddingBottom: 18,
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
@@ -236,7 +254,7 @@ function passwordCompairator(password1: string, password2: string): boolean {
   return password1 === password2;
 }
 
-function passwordLengthChecker(password: string): boolean {
+function passwordLongerThanEight(password: string): boolean {
   return password.length >= 8;
 }
 
