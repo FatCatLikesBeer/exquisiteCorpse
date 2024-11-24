@@ -1,14 +1,13 @@
 // AuthModals.tsx
-// TODO: Make signup modal avoid keyboard
 // TODO: pressing return/enter on 'Confirm Password' will submit form
 // TODO: create handle Submit function
 // TODO: text input error checking: email availability
 // TODO: Handle submit function need to handle errors: 400, 403, 408, 500
 // TODO: make "Submit" button actually signup user
 
-import React, { useState, useContext, useRef, useEffect } from "react";
+import React, { useState, useContext, useRef } from "react";
 import { Modal, View, Text, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native'
-import { Button, IconButton, TextInput, useTheme } from 'react-native-paper';
+import { Button, IconButton, TextInput, useTheme, ActivityIndicator, Snackbar, Portal } from 'react-native-paper';
 import validate from 'email-validator';
 import PocketBase from 'pocketbase';
 
@@ -53,14 +52,15 @@ const SignUpModal = ({ signUpVisible, toggle, pb }: { signUpVisible: boolean; to
   const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true);
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
   const [passwordIsLongEnough, setPasswordIsLongEnough] = useState<boolean>(true);
+  const [formIsSubmitting, setFormIsSubmitting] = useState<boolean>(false);
+  const [snackBarVisible, setSnackBarVisible] = useState<boolean>(false);
   const paperTheme = useTheme();
   const emailRef = useRef<any>(null);
   const signUpFirstPassword = useRef<any>(null);
   const signUpSecondPassword = useRef<any>(null);
   const submitButton = useRef<any>(null);
 
-  const closeButtonFunction = (): void => {
-    toggle();
+  const clearForm = (): void => {
     setUserName("");
     setEmailIsValid(true);
     setPasswordsMatch(true);
@@ -69,20 +69,33 @@ const SignUpModal = ({ signUpVisible, toggle, pb }: { signUpVisible: boolean; to
     setSecondPassword("");
     setPasswordVisible(false);
     setPasswordIsLongEnough(true);
+    setFormIsSubmitting(false);
   }
 
-  useEffect(() => {
-    if (passwordIsLongEnough) {
-    } else {
+  const closeButtonFunction = (): void => {
+    toggle();
+    clearForm();
+  }
+
+  const onDismissSnackBar = () => setSnackBarVisible(false);
+
+  const handleSubmit = () => {
+    if (signUpFormValidator(userName, email, firstPassword, secondPassword) === false) {
+      setSnackBarVisible(true);
+      clearForm();
+      return;
     }
-  }, [passwordIsLongEnough]);
+    const payload = { userName, email, firstPassword, secondPassword }
+    // TODO: Check to make sure username is not already taken?
+    // TODO: here is where you send payload to create a new user
+    setFormIsSubmitting(true);
+  }
 
   return (
     <ModalTemplate visible={signUpVisible} toggle={closeButtonFunction}>
       <Text style={[{ color: parsedTheme.colors.text }, styles.modalHeader]}>Sign Up</Text>
       <TextInput
         accessibilityLabel="Sign Up User Name"
-        autoFocus={true}
         value={userName}
         onChangeText={setUserName}
         label="User Name"
@@ -172,11 +185,21 @@ const SignUpModal = ({ signUpVisible, toggle, pb }: { signUpVisible: boolean; to
           theme={paperTheme}
           mode="contained-tonal"
           contentStyle={{ paddingHorizontal: 12 }}
-          disabled={!passwordIsLongEnough}
+          disabled={!(passwordIsLongEnough && emailIsValid && passwordsMatch)}
+          onPress={handleSubmit}
         >
-          {passwordIsLongEnough ? "Submit" : "Password Too Short"}
+          {formIsSubmitting ? <ActivityIndicator /> : (passwordIsLongEnough ? "Submit" : "Password Too Short")}
         </Button>
       </View>
+      <Portal>
+        <Snackbar
+          duration={4000}
+          theme={paperTheme}
+          style={{ position: 'relative', bottom: 55 }}
+          visible={snackBarVisible}
+          onDismiss={onDismissSnackBar}
+        >There is an error in your Sign Up form ☹️</Snackbar>
+      </Portal>
     </ModalTemplate>
   );
 }
@@ -192,8 +215,7 @@ const LogInModal = ({ loginVisible, toggle, pb }: { loginVisible: boolean; toggl
 
 const styles = StyleSheet.create({
   inputField: {
-    marginTop: 8,
-    marginBottom: 8,
+    marginBottom: 12,
     width: "90%",
   },
   modalHeader: {
@@ -203,7 +225,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   submitButton: {
-    marginTop: 16,
+    marginTop: 4,
   },
   closeButton: {
     position: 'absolute',
@@ -256,6 +278,18 @@ function passwordCompairator(password1: string, password2: string): boolean {
 
 function passwordLongerThanEight(password: string): boolean {
   return password.length >= 8;
+}
+
+function signUpFormValidator(userName: string, email: string, firstPassword: string, secondPassword: string): boolean {
+  let result: boolean = false;
+  if (userName === "") { return result }
+  if (emailValidator(email) == false) { return result }
+  if (firstPassword == "") { return result }
+  if (email == "") { return result }
+  if (passwordLongerThanEight(firstPassword) == false) { return result }
+  if (passwordCompairator(firstPassword, secondPassword) == false) { return result }
+  result = true; // passed all the fail tests
+  return result;
 }
 
 export { SignUpModal, LogInModal };
