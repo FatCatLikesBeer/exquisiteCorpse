@@ -1,4 +1,5 @@
 // AuthModals.tsx
+// TODO: Check out Expo's blur, maybe use it for the modals backdrop
 // TODO: pressing return/enter on 'Confirm Password' will submit form
 // TODO: create handle Submit function
 // TODO: text input error checking: email availability
@@ -54,6 +55,7 @@ const SignUpModal = ({ signUpVisible, toggle, pb }: { signUpVisible: boolean; to
   const [passwordIsLongEnough, setPasswordIsLongEnough] = useState<boolean>(true);
   const [formIsSubmitting, setFormIsSubmitting] = useState<boolean>(false);
   const [snackBarVisible, setSnackBarVisible] = useState<boolean>(false);
+  const [snackBarLabel, setSnackBarLabel] = useState<string>("There is an error in your Sign Up form ☹️");
   const paperTheme = useTheme();
   const emailRef = useRef<any>(null);
   const signUpFirstPassword = useRef<any>(null);
@@ -85,10 +87,27 @@ const SignUpModal = ({ signUpVisible, toggle, pb }: { signUpVisible: boolean; to
       clearForm();
       return;
     }
-    const payload = { userName, email, firstPassword, secondPassword }
-    // TODO: Check to make sure username is not already taken?
-    // TODO: here is where you send payload to create a new user
+
+    const payload = { username: userName, email, password: firstPassword, passwordConfirm: secondPassword }
+
     setFormIsSubmitting(true);
+    pb.collection('users').create({ ...payload, class: 'User' })
+      .then((response) => {
+        setSnackBarLabel(`Signup Successful, Welcome ${response.username}`);
+        setSnackBarVisible(true);
+        closeButtonFunction();
+        // TODO: pb authstore goes here
+        // TODO: Successful signup animation goes here
+      })
+      .catch((error) => {
+        console.error("Error happened:", error.response);
+        if (error.response.data?.username) { setSnackBarLabel(`❌ User Name: ${error.response.data.username.message}`) }
+        if (error.response.data?.email) { setSnackBarLabel(`❌ Email: ${error.response.data.email.message}`) }
+        if (error.response.data?.password) { setSnackBarLabel(`❌ Password: ${error.response.data?.password.message}`) }
+        if (error.response.data?.passwordConfirm) { setSnackBarLabel(`❌ Confirm Password: ${error.response.data.passwordConfirm.message}`) }
+        setSnackBarVisible(true);
+      })
+      .finally(() => setFormIsSubmitting(false));
   }
 
   return (
@@ -198,7 +217,7 @@ const SignUpModal = ({ signUpVisible, toggle, pb }: { signUpVisible: boolean; to
           style={{ position: 'relative', bottom: 55 }}
           visible={snackBarVisible}
           onDismiss={onDismissSnackBar}
-        >There is an error in your Sign Up form ☹️</Snackbar>
+        >{snackBarLabel}</Snackbar>
       </Portal>
     </ModalTemplate>
   );
