@@ -235,9 +235,79 @@ const LogInModal = ({ loginVisible, toggle, pb, setSnackBarLabel, setSnackBarVis
     setCurrentAuthStore: Dispatch<SetStateAction<boolean>>;
   }) => {
   const { parsedTheme } = useContext(LightModeContext);
+  const [userName, setUserName] = useState<string>("");
+  const [firstPassword, setFirstPassword] = useState<string>("");
+  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
+  const [passwordIsLongEnough, setPasswordIsLongEnough] = useState<boolean>(true);
+  const [formIsSubmitting, setFormIsSubmitting] = useState<boolean>(false);
+  const paperTheme = useTheme();
+  const emailRef = useRef<any>(null);
+  const signUpFirstPassword = useRef<any>(null);
+  const signUpSecondPassword = useRef<any>(null);
+  const submitButton = useRef<any>(null);
+
+  const handleSubmit = () => {
+
+  }
+
   return (
     <ModalTemplate visible={loginVisible} toggle={toggle}>
-      <Text style={[{ color: parsedTheme.colors.text }, styles.modalHeader]}>Login Modal</Text>
+      <Text style={[{ color: parsedTheme.colors.text }, styles.modalHeader]}>Login</Text>
+      <TextInput
+        accessibilityLabel="Sign Up User Name"
+        value={userName}
+        onChangeText={setUserName}
+        label="User Name"
+        textContentType='username'
+        autoComplete="username"
+        onSubmitEditing={() => emailRef.current?.focus()}
+        style={[{ color: parsedTheme.colors.text }, styles.inputField]}
+        spellCheck={false}
+        autoCapitalize="none"
+        autoCorrect={false}
+        mode="outlined"
+        theme={paperTheme}
+      />
+      <TextInput
+        accessibilityLabel="Sign Up Password"
+        value={firstPassword}
+        onChangeText={setFirstPassword}
+        label={"Password"}
+        textContentType="newPassword"
+        autoComplete="password-new"
+        secureTextEntry={!passwordVisible}
+        ref={signUpFirstPassword}
+        onSubmitEditing={() => signUpSecondPassword.current?.focus()}
+        style={[{ color: parsedTheme.colors.text }, styles.inputField]}
+        spellCheck={false}
+        autoCapitalize="none"
+        autoCorrect={false}
+        mode="outlined"
+        theme={paperTheme}
+        error={!passwordIsLongEnough}
+        placeholder="8 Character Minimum"
+        right={<TextInput.Icon
+          icon={passwordVisible ? "eye-off-outline" : "eye"}
+          onPress={() => { setPasswordVisible(!passwordVisible) }}
+          accessibilityLabel="Show/Hide password text"
+        />}
+        onBlur={() => {
+          setPasswordIsLongEnough(passwordLongerThanEight(firstPassword));
+        }}
+      />
+      <View style={styles.submitButton}>
+        <Button
+          accessibilityLabel="Submit Button"
+          key={paperTheme.dark ? "force" : "re-render"} // See (1) below
+          theme={paperTheme}
+          mode="contained-tonal"
+          contentStyle={{ paddingHorizontal: 12 }}
+          disabled={!passwordIsLongEnough}
+          onPress={handleSubmit}
+        >
+          {formIsSubmitting ? <ActivityIndicator /> : (passwordIsLongEnough ? "Submit" : "Password Too Short")}
+        </Button>
+      </View>
     </ModalTemplate>
   )
 }
