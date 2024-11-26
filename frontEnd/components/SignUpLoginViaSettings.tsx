@@ -34,7 +34,13 @@ const SignUpLogInViaSettings = () => {
   return (
     <View>
       {currentAuthStore ?
-        <Text style={{ color: parsedTheme.colors.text }} onPress={logOut}>Logout</Text>
+        <View style={styles.button}>
+          <Button
+            key={paperTheme.dark ? "force-out" : "re-render-out"} // See (1) below
+            mode="contained-tonal"
+            onPress={logOut}
+          > Logout - {pb.authStore.model?.username} </Button>
+        </View>
         :
         <View style={{ flexDirection: 'row' }}>
           <View style={styles.button}>

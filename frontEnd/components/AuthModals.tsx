@@ -100,7 +100,7 @@ const SignUpModal = ({ signUpVisible, toggle, pb, setSnackBarLabel, setSnackBarV
       .then((response) => {
         pb.collection('users').authWithPassword(response.username, firstPassword)
           .then((response) => {
-            setSnackBarLabel(`Signup Successful, Welcome ${response.record.username}`);
+            setSnackBarLabel(`🟢 Signup Successful!\n Welcome ${response.record.username} 🙂`);
             setSnackBarVisible(true);
             closeButtonFunction();
             setCurrentAuthStore(true);
@@ -108,14 +108,13 @@ const SignUpModal = ({ signUpVisible, toggle, pb, setSnackBarLabel, setSnackBarV
       })
       .catch((error) => {
         console.error("Error happened:", error.response);
-        if (error.response.data?.username) { setSnackBarLabel(`❌ User Name: ${error.response.data.username.message}`) }
-        if (error.response.data?.email) { setSnackBarLabel(`❌ Email: ${error.response.data.email.message}`) }
-        if (error.response.data?.password) { setSnackBarLabel(`❌ Password: ${error.response.data?.password.message}`) }
-        if (error.response.data?.passwordConfirm) { setSnackBarLabel(`❌ Confirm Password: ${error.response.data.passwordConfirm.message}`) }
+        if (error.response.data?.username) { setSnackBarLabel(`🔴 User Name: ${error.response.data.username.message}`) }
+        if (error.response.data?.email) { setSnackBarLabel(`🔴 Email: ${error.response.data.email.message}`) }
+        if (error.response.data?.password) { setSnackBarLabel(`🔴 Password: ${error.response.data?.password.message}`) }
+        if (error.response.data?.passwordConfirm) { setSnackBarLabel(`🔴 Confirm Password: ${error.response.data.passwordConfirm.message}`) }
         setSnackBarVisible(true);
         closeButtonFunction();
       })
-      .finally(() => setFormIsSubmitting(false));
   }
 
   return (
@@ -126,7 +125,8 @@ const SignUpModal = ({ signUpVisible, toggle, pb, setSnackBarLabel, setSnackBarV
         value={userName}
         onChangeText={setUserName}
         label="User Name"
-        autoComplete='username'
+        textContentType='username'
+        autoComplete="username"
         onSubmitEditing={() => emailRef.current?.focus()}
         style={[{ color: parsedTheme.colors.text }, styles.inputField]}
         spellCheck={false}
@@ -143,7 +143,8 @@ const SignUpModal = ({ signUpVisible, toggle, pb, setSnackBarLabel, setSnackBarV
         value={email}
         onChangeText={setEmail}
         label={emailIsValid ? "Email" : "Invalid Email"}
-        autoComplete='email'
+        textContentType='emailAddress'
+        autoComplete="email"
         ref={emailRef}
         onSubmitEditing={() => signUpFirstPassword.current?.focus()}
         style={[{ color: parsedTheme.colors.text }, styles.inputField]}
@@ -160,7 +161,8 @@ const SignUpModal = ({ signUpVisible, toggle, pb, setSnackBarLabel, setSnackBarV
         value={firstPassword}
         onChangeText={setFirstPassword}
         label={passwordsMatch ? "Password" : "Password Mismatch"}
-        autoComplete="password"
+        textContentType="newPassword"
+        autoComplete="password-new"
         secureTextEntry={!passwordVisible}
         ref={signUpFirstPassword}
         onSubmitEditing={() => signUpSecondPassword.current?.focus()}
@@ -187,7 +189,8 @@ const SignUpModal = ({ signUpVisible, toggle, pb, setSnackBarLabel, setSnackBarV
         onChangeText={setSecondPassword}
         label={passwordsMatch ? "Confirm Password" : "Password Mismatch"}
         onBlur={() => { setPasswordsMatch(passwordCompairator(firstPassword, secondPassword)) }}
-        autoComplete="password"
+        textContentType="newPassword"
+        autoComplete="password-new"
         secureTextEntry={!passwordVisible}
         ref={signUpSecondPassword}
         onSubmitEditing={() => submitButton.current?.focus()}
