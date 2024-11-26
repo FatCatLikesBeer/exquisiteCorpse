@@ -6,9 +6,9 @@
 // TODO: Handle submit function need to handle errors: 400, 403, 408, 500
 // TODO: make "Submit" button actually signup user
 
-import React, { useState, useContext, useRef } from "react";
+import React, { useState, useContext, useRef, Dispatch, SetStateAction } from "react";
 import { Modal, View, Text, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native'
-import { Button, IconButton, TextInput, useTheme, ActivityIndicator, Snackbar, Portal } from 'react-native-paper';
+import { Button, IconButton, TextInput, useTheme, ActivityIndicator } from 'react-native-paper';
 import validate from 'email-validator';
 import PocketBase from 'pocketbase';
 
@@ -43,7 +43,15 @@ const ModalTemplate = ({ visible, toggle, children }: { visible: boolean; toggle
   );
 }
 
-const SignUpModal = ({ signUpVisible, toggle, pb }: { signUpVisible: boolean; toggle: any; pb: PocketBase }) => {
+const SignUpModal = ({ signUpVisible, toggle, pb, setSnackBarLabel, setSnackBarVisible, setCurrentAuthStore }:
+  {
+    signUpVisible: boolean;
+    toggle: any;
+    pb: PocketBase;
+    setSnackBarLabel: Dispatch<SetStateAction<string>>;
+    setSnackBarVisible: Dispatch<SetStateAction<boolean>>;
+    setCurrentAuthStore: Dispatch<SetStateAction<boolean>>;
+  }) => {
   const { parsedTheme } = useContext(LightModeContext);
   const [userName, setUserName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -54,8 +62,6 @@ const SignUpModal = ({ signUpVisible, toggle, pb }: { signUpVisible: boolean; to
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
   const [passwordIsLongEnough, setPasswordIsLongEnough] = useState<boolean>(true);
   const [formIsSubmitting, setFormIsSubmitting] = useState<boolean>(false);
-  const [snackBarVisible, setSnackBarVisible] = useState<boolean>(false);
-  const [snackBarLabel, setSnackBarLabel] = useState<string>("There is an error in your Sign Up form ☹️");
   const paperTheme = useTheme();
   const emailRef = useRef<any>(null);
   const signUpFirstPassword = useRef<any>(null);
@@ -79,8 +85,6 @@ const SignUpModal = ({ signUpVisible, toggle, pb }: { signUpVisible: boolean; to
     clearForm();
   }
 
-  const onDismissSnackBar = () => setSnackBarVisible(false);
-
   const handleSubmit = () => {
     if (signUpFormValidator(userName, email, firstPassword, secondPassword) === false) {
       setSnackBarVisible(true);
@@ -91,13 +95,16 @@ const SignUpModal = ({ signUpVisible, toggle, pb }: { signUpVisible: boolean; to
     const payload = { username: userName, email, password: firstPassword, passwordConfirm: secondPassword }
 
     setFormIsSubmitting(true);
+
     pb.collection('users').create({ ...payload, class: 'User' })
       .then((response) => {
-        setSnackBarLabel(`Signup Successful, Welcome ${response.username}`);
-        setSnackBarVisible(true);
-        closeButtonFunction();
-        // TODO: pb authstore goes here
-        // TODO: Successful signup animation goes here
+        pb.collection('users').authWithPassword(response.username, firstPassword)
+          .then((response) => {
+            setSnackBarLabel(`Signup Successful, Welcome ${response.record.username}`);
+            setSnackBarVisible(true);
+            closeButtonFunction();
+            setCurrentAuthStore(true);
+          })
       })
       .catch((error) => {
         console.error("Error happened:", error.response);
@@ -106,6 +113,7 @@ const SignUpModal = ({ signUpVisible, toggle, pb }: { signUpVisible: boolean; to
         if (error.response.data?.password) { setSnackBarLabel(`❌ Password: ${error.response.data?.password.message}`) }
         if (error.response.data?.passwordConfirm) { setSnackBarLabel(`❌ Confirm Password: ${error.response.data.passwordConfirm.message}`) }
         setSnackBarVisible(true);
+        closeButtonFunction();
       })
       .finally(() => setFormIsSubmitting(false));
   }
@@ -210,20 +218,19 @@ const SignUpModal = ({ signUpVisible, toggle, pb }: { signUpVisible: boolean; to
           {formIsSubmitting ? <ActivityIndicator /> : (passwordIsLongEnough ? "Submit" : "Password Too Short")}
         </Button>
       </View>
-      <Portal>
-        <Snackbar
-          duration={4000}
-          theme={paperTheme}
-          style={{ position: 'relative', bottom: 55 }}
-          visible={snackBarVisible}
-          onDismiss={onDismissSnackBar}
-        >{snackBarLabel}</Snackbar>
-      </Portal>
     </ModalTemplate>
   );
 }
 
-const LogInModal = ({ loginVisible, toggle, pb }: { loginVisible: boolean; toggle: any; pb: PocketBase }) => {
+const LogInModal = ({ loginVisible, toggle, pb, setSnackBarLabel, setSnackBarVisible, setCurrentAuthStore }:
+  {
+    loginVisible: boolean;
+    toggle: any;
+    pb: PocketBase;
+    setSnackBarLabel: Dispatch<SetStateAction<string>>;
+    setSnackBarVisible: Dispatch<SetStateAction<boolean>>;
+    setCurrentAuthStore: Dispatch<SetStateAction<boolean>>;
+  }) => {
   const { parsedTheme } = useContext(LightModeContext);
   return (
     <ModalTemplate visible={loginVisible} toggle={toggle}>

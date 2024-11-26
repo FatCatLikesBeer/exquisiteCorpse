@@ -1,6 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useRef } from "react";
 import { View, StyleSheet, Text } from 'react-native';
-import { Button, useTheme } from "react-native-paper";
+import { Button, useTheme, Snackbar, Portal } from "react-native-paper";
 
 import { LightModeContext } from "./context/LightModeContext";
 import PocketBaseContext from './context/PocketBaseContext';
@@ -12,6 +12,9 @@ const SignUpLogInViaSettings = () => {
   const paperTheme = useTheme();
   const [signUpVisible, setSignUpVisible] = useState<boolean>(false);
   const [loginVisible, setLoginVisible] = useState<boolean>(false);
+  const [snackBarVisible, setSnackBarVisible] = useState<boolean>(false);
+  const [snackBarLabel, setSnackBarLabel] = useState<string>("There is an error in your Sign Up form ☹️");
+  const [currentAuthStore, setCurrentAuthStore] = useState<boolean>(pb.authStore.isValid);
 
   function toggleSignUpModal() {
     setSignUpVisible(!signUpVisible);
@@ -21,10 +24,17 @@ const SignUpLogInViaSettings = () => {
     setLoginVisible(!loginVisible);
   }
 
+  function logOut() {
+    pb.authStore.clear();
+    setCurrentAuthStore(pb.authStore.isValid);
+  }
+
+  const onDismissSnackBar = () => setSnackBarVisible(false);
+
   return (
     <View>
-      {pb.authStore.isValid ?
-        <Text style={{ color: parsedTheme.colors.text }}>Logout</Text>
+      {currentAuthStore ?
+        <Text style={{ color: parsedTheme.colors.text }} onPress={logOut}>Logout</Text>
         :
         <View style={{ flexDirection: 'row' }}>
           <View style={styles.button}>
@@ -43,8 +53,35 @@ const SignUpLogInViaSettings = () => {
           </View>
         </View>
       }
-      <SignUpModal signUpVisible={signUpVisible} toggle={toggleSignUpModal} pb={pb} />
-      <LogInModal loginVisible={loginVisible} toggle={toggleLoginModal} pb={pb} />
+      <SignUpModal
+        signUpVisible={signUpVisible}
+        toggle={toggleSignUpModal}
+        setSnackBarLabel={setSnackBarLabel}
+        setSnackBarVisible={setSnackBarVisible}
+        setCurrentAuthStore={setCurrentAuthStore}
+        pb={pb}
+      />
+      <LogInModal
+        loginVisible={loginVisible}
+        toggle={toggleLoginModal}
+        setSnackBarLabel={setSnackBarLabel}
+        setSnackBarVisible={setSnackBarVisible}
+        setCurrentAuthStore={setCurrentAuthStore}
+        pb={pb}
+      />
+      <Portal>
+        <Snackbar
+          duration={4000}
+          theme={paperTheme}
+          style={{ position: 'relative', bottom: 55 }}
+          visible={snackBarVisible}
+          onDismiss={onDismissSnackBar}
+          action={{
+            label: "Dismiss",
+            onPress: onDismissSnackBar
+          }}
+        >{snackBarLabel}</Snackbar>
+      </Portal>
     </View>
   );
 }
