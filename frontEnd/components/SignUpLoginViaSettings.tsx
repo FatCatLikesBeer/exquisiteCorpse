@@ -1,5 +1,5 @@
 import React, { useState, useContext, useRef } from "react";
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, Alert } from 'react-native';
 import { Button, useTheme, Snackbar, Portal } from "react-native-paper";
 
 import { LightModeContext } from "./context/LightModeContext";
@@ -29,6 +29,27 @@ const SignUpLogInViaSettings = () => {
     setCurrentAuthStore(pb.authStore.isValid);
   }
 
+  function preLogoutCheck() {
+    Alert.alert(
+      "Logout?",
+      "You sure 🧐?",
+      [
+        {
+          text: "Cancel",
+        },
+        {
+          text: "Logout",
+          onPress: logOut,
+          isPreferred: true,
+        },
+      ],
+      {
+        cancelable: true,
+        userInterfaceStyle: parsedTheme,
+      }
+    );
+  }
+
   const onDismissSnackBar = () => setSnackBarVisible(false);
 
   return (
@@ -38,7 +59,7 @@ const SignUpLogInViaSettings = () => {
           <Button
             key={paperTheme.dark ? "force-out" : "re-render-out"} // See (1) below
             mode="contained-tonal"
-            onPress={logOut}
+            onPress={preLogoutCheck}
           > Logout - {pb.authStore.model?.username} </Button>
         </View>
         :
