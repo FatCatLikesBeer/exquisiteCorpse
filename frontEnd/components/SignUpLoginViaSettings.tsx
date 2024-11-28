@@ -31,22 +31,10 @@ const SignUpLogInViaSettings = () => {
 
   function preLogoutCheck() {
     Alert.alert(
-      "Logout?",
+      "Logout",
       "You sure 🧐?",
-      [
-        {
-          text: "Cancel",
-        },
-        {
-          text: "Logout",
-          onPress: logOut,
-          isPreferred: true,
-        },
-      ],
-      {
-        cancelable: true,
-        userInterfaceStyle: parsedTheme,
-      }
+      [{ text: "Cancel", }, { text: "Logout", onPress: logOut, isPreferred: true, }],
+      { cancelable: true, userInterfaceStyle: parsedTheme, },
     );
   }
 

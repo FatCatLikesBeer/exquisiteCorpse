@@ -7,8 +7,9 @@
 // TODO: make "Submit" button actually signup user
 
 import React, { useState, useContext, useRef, Dispatch, SetStateAction } from "react";
-import { Modal, View, Text, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native'
+import { Modal, View, Text, StyleSheet, KeyboardAvoidingView, Platform, Alert } from 'react-native'
 import { Button, IconButton, TextInput, useTheme, ActivityIndicator } from 'react-native-paper';
+import { BlurView } from 'expo-blur';
 import validate from 'email-validator';
 import PocketBase from 'pocketbase';
 
@@ -23,22 +24,24 @@ const ModalTemplate = ({ visible, toggle, children }: { visible: boolean; toggle
       transparent={true}
       animationType='slide'
     >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? "padding" : 'height'}
-        style={{ flex: 1 }}
-      >
-        <View style={styles.centeredView}>
-          <View style={[{ backgroundColor: parsedTheme.colors.background }, styles.modalView]}>
-            <IconButton
-              icon={closeButtonIcon}
-              onPress={toggle}
-              style={styles.closeButton}
-              mode="contained-tonal"
-            />
-            {children}
+      <BlurView intensity={20} style={{ width: "100%", height: "100%" }} experimentalBlurMethod="dimezisBlurView">
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? "padding" : 'height'}
+          style={{ flex: 1 }}
+        >
+          <View style={styles.centeredView}>
+            <View style={[{ backgroundColor: parsedTheme.colors.background }, styles.modalView]}>
+              <IconButton
+                icon={closeButtonIcon}
+                onPress={toggle}
+                style={styles.closeButton}
+                mode="contained-tonal"
+              />
+              {children}
+            </View>
           </View>
-        </View>
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+      </BlurView>
     </Modal>
   );
 }
@@ -236,31 +239,71 @@ const LogInModal = ({ loginVisible, toggle, pb, setSnackBarLabel, setSnackBarVis
   }) => {
   const { parsedTheme } = useContext(LightModeContext);
   const [userName, setUserName] = useState<string>("");
-  const [firstPassword, setFirstPassword] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
   const [passwordIsLongEnough, setPasswordIsLongEnough] = useState<boolean>(true);
   const [formIsSubmitting, setFormIsSubmitting] = useState<boolean>(false);
   const paperTheme = useTheme();
   const emailRef = useRef<any>(null);
-  const signUpFirstPassword = useRef<any>(null);
-  const signUpSecondPassword = useRef<any>(null);
+  const loginPassword = useRef<any>(null);
   const submitButton = useRef<any>(null);
 
-  const handleSubmit = () => {
+  function resetForm() {
+    setUserName("");
+    setPassword("");
+    setPasswordVisible(false);
+    setPasswordIsLongEnough(true);
+    setFormIsSubmitting(false);
+  }
 
+  function closeButtonFunction() {
+    resetForm();
+    toggle();
+  }
+
+  const handleSubmit = () => {
+    if (userName == "") {
+      setSnackBarLabel("User Name too short");
+      setSnackBarVisible(true);
+      closeButtonFunction();
+      return;
+    }
+    if (password.length <= 7) {
+      setSnackBarLabel("Password Error");
+      setSnackBarVisible(true);
+      closeButtonFunction();
+      return;
+    }
+
+    setFormIsSubmitting(true);
+    pb.collection('users').authWithPassword(userName, password)
+      .then(response => {
+        console.log(response);
+        setCurrentAuthStore(pb.authStore.isValid);
+        setSnackBarLabel(`🟢 Welcome back ${response.record.username} 🙂`);
+      })
+      .catch(() => {
+        setSnackBarLabel(`🔴 Failed to authenticate`);
+      })
+      .finally(() => {
+        closeButtonFunction();
+        setSnackBarVisible(true);
+        setFormIsSubmitting(false);
+      });
   }
 
   return (
-    <ModalTemplate visible={loginVisible} toggle={toggle}>
+    <ModalTemplate visible={loginVisible} toggle={closeButtonFunction}>
       <Text style={[{ color: parsedTheme.colors.text }, styles.modalHeader]}>Login</Text>
       <TextInput
-        accessibilityLabel="Sign Up User Name"
+        ref={emailRef}
+        accessibilityLabel="Email Address or User Name"
         value={userName}
         onChangeText={setUserName}
-        label="User Name"
-        textContentType='username'
-        autoComplete="username"
-        onSubmitEditing={() => emailRef.current?.focus()}
+        label="Email Address or User Name"
+        textContentType='emailAddress'
+        autoComplete="email"
+        onSubmitEditing={() => loginPassword.current?.focus()}
         style={[{ color: parsedTheme.colors.text }, styles.inputField]}
         spellCheck={false}
         autoCapitalize="none"
@@ -269,15 +312,15 @@ const LogInModal = ({ loginVisible, toggle, pb, setSnackBarLabel, setSnackBarVis
         theme={paperTheme}
       />
       <TextInput
-        accessibilityLabel="Sign Up Password"
-        value={firstPassword}
-        onChangeText={setFirstPassword}
+        accessibilityLabel="Login Password"
+        value={password}
+        onChangeText={setPassword}
         label={"Password"}
         textContentType="newPassword"
         autoComplete="password-new"
         secureTextEntry={!passwordVisible}
-        ref={signUpFirstPassword}
-        onSubmitEditing={() => signUpSecondPassword.current?.focus()}
+        ref={loginPassword}
+        onSubmitEditing={() => submitButton.current?.focus()}
         style={[{ color: parsedTheme.colors.text }, styles.inputField]}
         spellCheck={false}
         autoCapitalize="none"
@@ -292,11 +335,12 @@ const LogInModal = ({ loginVisible, toggle, pb, setSnackBarLabel, setSnackBarVis
           accessibilityLabel="Show/Hide password text"
         />}
         onBlur={() => {
-          setPasswordIsLongEnough(passwordLongerThanEight(firstPassword));
+          setPasswordIsLongEnough(passwordLongerThanEight(password));
         }}
       />
       <View style={styles.submitButton}>
         <Button
+          ref={submitButton}
           accessibilityLabel="Submit Button"
           key={paperTheme.dark ? "force" : "re-render"} // See (1) below
           theme={paperTheme}
@@ -305,9 +349,10 @@ const LogInModal = ({ loginVisible, toggle, pb, setSnackBarLabel, setSnackBarVis
           disabled={!passwordIsLongEnough}
           onPress={handleSubmit}
         >
-          {formIsSubmitting ? <ActivityIndicator /> : (passwordIsLongEnough ? "Submit" : "Password Too Short")}
+          {formIsSubmitting ? <ActivityIndicator /> : "Submit"}
         </Button>
       </View>
+      <Text style={[styles.forgotPassword, { color: parsedTheme.colors.text == "white" ? "lightgrey" : "darkgrey" }]} onPress={() => Alert.alert("Forgot password?!")}>Forgot Password</Text>
     </ModalTemplate>
   )
 }
@@ -365,6 +410,10 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     fontSize: 18,
   },
+  forgotPassword: {
+    marginTop: 14,
+    fontSize: 12,
+  }
 });
 
 function emailValidator(email: string): boolean {
