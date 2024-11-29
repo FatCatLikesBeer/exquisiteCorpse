@@ -1,10 +1,6 @@
 // AuthModals.tsx
-// TODO: Check out Expo's blur, maybe use it for the modals backdrop
-// TODO: pressing return/enter on 'Confirm Password' will submit form
-// TODO: create handle Submit function
-// TODO: text input error checking: email availability
-// TODO: Handle submit function need to handle errors: 400, 403, 408, 500
-// TODO: make "Submit" button actually signup user
+// TODO: Create a (?) popup explination next to Authentication title, explaining reason for vague auth reasoning
+// TODO: Implement forgot password function
 
 import React, { useState, useContext, useRef, Dispatch, SetStateAction } from "react";
 import { Modal, View, Text, StyleSheet, KeyboardAvoidingView, Platform, Alert } from 'react-native'
@@ -196,7 +192,7 @@ const SignUpModal = ({ signUpVisible, toggle, pb, setSnackBarLabel, setSnackBarV
         autoComplete="password-new"
         secureTextEntry={!passwordVisible}
         ref={signUpSecondPassword}
-        onSubmitEditing={() => submitButton.current?.focus()}
+        onSubmitEditing={handleSubmit}
         style={[{ color: parsedTheme.colors.text }, styles.inputField]}
         spellCheck={false}
         autoCapitalize="none"
@@ -320,7 +316,7 @@ const LogInModal = ({ loginVisible, toggle, pb, setSnackBarLabel, setSnackBarVis
         autoComplete="password-new"
         secureTextEntry={!passwordVisible}
         ref={loginPassword}
-        onSubmitEditing={() => submitButton.current?.focus()}
+        onSubmitEditing={handleSubmit}
         style={[{ color: parsedTheme.colors.text }, styles.inputField]}
         spellCheck={false}
         autoCapitalize="none"

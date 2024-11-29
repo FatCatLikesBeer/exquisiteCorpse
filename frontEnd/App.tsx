@@ -33,15 +33,10 @@ const App = () => {
 
 export default App;
 
-// TODO: Create basic authentication in Settings Component
-// TODO: Add an inline login / signup component every 3, 5, or 7 sheets
-// TODO: Modal dissapears on successful submission
-// TODO: Toast appears on successful/unsuccessful submission
-//
-// TODO: Signup/Login & Logiout via Settings Component
-// TODO: Submit button will have a loading animation
-// TODO: Submit button should actually work, send folds to back-end
-// TODO: Create Signup/Login modal component
+// TODO: Add an inline login / signup component every 2 sheets
+
+// TODO: Write Submit button will have a loading animation
+// TODO: Write Submit button should actually work, send folds to back-end
 // TODO: Figure out why WriteComponent's <TextInput> element keeps occasionally resizing when inputing text iOS.
 // TODO: Tutorial
 // TODO: Upload images for pfp
