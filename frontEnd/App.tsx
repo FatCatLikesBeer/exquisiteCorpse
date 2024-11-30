@@ -4,6 +4,7 @@ import PocketBase, { AsyncAuthStore } from "pocketbase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Temp from "./components/Temp"; // Temp should be 'Main' so don't delete it!
+import BS from "./components/BottomSheet";
 
 import PocketBaseContext from "./components/context/PocketBaseContext";
 
@@ -26,6 +27,7 @@ const App = () => {
     <SafeAreaProvider>
       <PocketBaseContext.Provider value={pb}>
         <Temp />
+        {/* <BS /> */}
       </PocketBaseContext.Provider>
     </SafeAreaProvider>
   );
@@ -33,6 +35,7 @@ const App = () => {
 
 export default App;
 
+// TODO: Make the write component popup
 // TODO: Add an inline login / signup component every 2 sheets
 
 // TODO: Write Submit button will have a loading animation
@@ -40,4 +43,4 @@ export default App;
 // TODO: Figure out why WriteComponent's <TextInput> element keeps occasionally resizing when inputing text iOS.
 // TODO: Tutorial
 // TODO: Upload images for pfp
-// TODO: Google/Apple Authentication
+// TODO:!! Google/Apple Authentication

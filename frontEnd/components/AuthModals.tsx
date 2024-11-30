@@ -65,7 +65,6 @@ const SignUpModal = ({ signUpVisible, toggle, pb, setSnackBarLabel, setSnackBarV
   const emailRef = useRef<any>(null);
   const signUpFirstPassword = useRef<any>(null);
   const signUpSecondPassword = useRef<any>(null);
-  const submitButton = useRef<any>(null);
 
   const clearForm = (): void => {
     setUserName("");
@@ -242,7 +241,6 @@ const LogInModal = ({ loginVisible, toggle, pb, setSnackBarLabel, setSnackBarVis
   const paperTheme = useTheme();
   const emailRef = useRef<any>(null);
   const loginPassword = useRef<any>(null);
-  const submitButton = useRef<any>(null);
 
   function resetForm() {
     setUserName("");
@@ -336,7 +334,6 @@ const LogInModal = ({ loginVisible, toggle, pb, setSnackBarLabel, setSnackBarVis
       />
       <View style={styles.submitButton}>
         <Button
-          ref={submitButton}
           accessibilityLabel="Submit Button"
           key={paperTheme.dark ? "force" : "re-render"} // See (1) below
           theme={paperTheme}

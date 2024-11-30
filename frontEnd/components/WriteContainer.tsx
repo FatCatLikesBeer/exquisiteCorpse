@@ -93,7 +93,14 @@ const WriteContainer = () => {
 
   return (
     <KeyboardAvoidingView behavior="height">
-      <ScrollView refreshControl={<RefreshControl onRefresh={onRefresh} refreshing={refreshing} colors={[paperTheme.colors.primary]} tintColor={paperTheme.colors.primary} />} style={styles.scroll_view}>
+      <ScrollView refreshControl={
+        <RefreshControl
+          onRefresh={onRefresh}
+          refreshing={refreshing}
+          colors={[paperTheme.colors.primary]}
+          tintColor={paperTheme.colors.primary}
+        />
+      } style={styles.scroll_view}>
         <View style={styles.container}>
           {promptData.content == 'AwaitingResponse'
             ?
