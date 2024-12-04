@@ -42,6 +42,16 @@ const Binder = () => {
           })}
         </View>
       </ScrollView>
+      {
+        sheets.length != 0 &&
+        <FAB
+          icon='plus'
+          style={styles.fab}
+          onPress={showWrite}
+          mode='elevated'
+          variant='secondary'
+        />
+      }
       <BottomSheet
         ref={writeComponentRef}
         snapPoints={writeComponentBottomSheetSnapPoints}
@@ -56,10 +66,6 @@ const Binder = () => {
           <WriteContainer />
         </BottomSheetView>
       </BottomSheet>
-      {
-        sheets.length != 0 &&
-        <FAB icon='plus' style={styles.fab} onPress={showWrite} mode='elevated' />
-      }
     </GestureHandlerRootView>
   );
 }
@@ -71,8 +77,8 @@ const styles = StyleSheet.create({
   fab: {
     position: 'absolute',
     margin: 16,
-    right: 0,
-    bottom: 0,
+    right: 10,
+    bottom: 10,
   },
   binderContainer: {
     margin: 16,
