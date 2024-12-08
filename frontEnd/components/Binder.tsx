@@ -1,4 +1,5 @@
 // Binder.tsx
+// When pressing FAB, WriteComponent keyboard should be selected
 
 import React, { useEffect, useState, useCallback, useRef, useMemo, useContext } from 'react';
 import { ScrollView, StyleSheet, View, ActivityIndicator, Text } from 'react-native';
@@ -12,10 +13,14 @@ import WriteContainer from './WriteContainer';
 
 const Binder = () => {
   const [sheets, setSheets] = useState<any>([]);
+  const [focusWriteInput, setFocusWriteInput] = useState<boolean>(false);
   const writeComponentRef = useRef<BottomSheet>(null);
   const paperTheme = useTheme();
 
-  const showWrite = () => { writeComponentRef.current?.expand() };
+  const showWrite = () => {
+    writeComponentRef.current?.expand();
+    setFocusWriteInput(!focusWriteInput);
+  };
   const hideWrite = () => { writeComponentRef.current?.close() };
   const writeComponentBottomSheetSnapPoints = useMemo(() => { return ["93%"] }, []);
   const handleSheetChanges = useCallback((index: number) => { console.log("handleSheetChanges", index) }, []);
@@ -29,17 +34,17 @@ const Binder = () => {
     };
 
     getSheets();
-    console.log(paperTheme.dark);
   }, []); // This array needs to be empty so it runs only once on load...
 
   return (
     <GestureHandlerRootView style={styles.gestureHandlerContainer}>
       <ScrollView>
         <View style={styles.binderContainer}>
-          {sheets.length == 0 ? <ActivityIndicator size="large" color="rgb(120, 69, 172)" /> : sheets.map((sheet: any) => {
-            let generatedKey = keyUniquizer(sheet[3].id);
-            return <SheetContainer key={generatedKey} sheet={sheet} />
-          })}
+          {sheets.length == 0 ? <ActivityIndicator size="large" color="rgb(120, 69, 172)" /> :
+            sheets.map((sheet: any) => {
+              let generatedKey = keyUniquizer(sheet[3].id);
+              return <SheetContainer key={generatedKey} sheet={sheet} />
+            })}
         </View>
       </ScrollView>
       {
@@ -56,14 +61,13 @@ const Binder = () => {
         ref={writeComponentRef}
         snapPoints={writeComponentBottomSheetSnapPoints}
         onChange={handleSheetChanges}
-        enablePanDownToClose={true}
         index={-1}
         backgroundStyle={{ backgroundColor: !paperTheme.mode ? "white" : "black" }}
         handleIndicatorStyle={{ backgroundColor: paperTheme.colors.onBackground }}
         keyboardBehavior='extend'
       >
         <BottomSheetView>
-          <WriteContainer />
+          <WriteContainer closeSheet={writeComponentRef.current?.close} focusKeyboardState={focusWriteInput} />
         </BottomSheetView>
       </BottomSheet>
     </GestureHandlerRootView>

@@ -4,11 +4,12 @@ import React, { useState, useEffect, useContext } from "react";
 import * as Haptics from 'expo-haptics';
 import { View, Text, Keyboard, StyleSheet, ActivityIndicator } from 'react-native';
 import { Button, useTheme } from 'react-native-paper';
+import type PocketBase from "pocketbase";
 
 import { LightModeContext } from "./context/LightModeContext";
 import { collectionParser } from "../functions/fetchPromp";
 
-const ConfirmationButton = ({ pb, toggleModal, userFold, disableSubmit, promptData }) => {
+const ConfirmationButton = ({ pb, toggleModal, userFold, disableSubmit, promptData }: ConfirmationButtonOptions) => {
   const unauthenticatedLabel: string = "Login or Signup";
   const authenticatedLabel: string = "Review";
   const paperTheme = useTheme();
@@ -24,7 +25,7 @@ const ConfirmationButton = ({ pb, toggleModal, userFold, disableSubmit, promptDa
     const payload = {
       content: userFold,
       parent: promptData.id,
-      owner: pb.authStore.model.id,
+      owner: pb.authStore.model?.id,
       collectionName: collectionParser(promptData.collectionName)
     };
     if (!promptData.collectionName) { delete payload.parent }
@@ -73,9 +74,15 @@ const ConfirmationButton = ({ pb, toggleModal, userFold, disableSubmit, promptDa
 }
 
 const styles = StyleSheet.create({
-  wordCount: {
-  }
 });
+
+type ConfirmationButtonOptions = {
+  pb: PocketBase;
+  toggleModal: () => void;
+  disableSubmit: boolean;
+  userFold: string;
+  promptData: any;
+}
 
 export default ConfirmationButton;
 
