@@ -1,4 +1,6 @@
 // WriteContainer.tsx
+// TODO: Implement bottomsheet modal https://youtu.be/oIEykI5oagI?si=SS2CGPX_Q61oMOnj&t=1590
+// TODO: After bottom sheet modal: test backdrop blur
 // TODO: tuck close buttons into component that houses the handle indicator
 // TODO: Stop moving bottom sheet when InputText element gets selected
 
@@ -6,7 +8,6 @@ import React, { useState, useContext, useEffect, useCallback, useRef } from "rea
 import {
   View,
   StyleSheet,
-  KeyboardAvoidingView,
   TextInput,
   Dimensions,
   ActivityIndicator,
@@ -15,6 +16,8 @@ import {
 } from 'react-native';
 import { useTheme, Snackbar, Portal, Button } from "react-native-paper";
 import * as Haptics from 'expo-haptics';
+import { BottomSheetTextInput, BottomSheetView } from '@gorhom/bottom-sheet';
+import { BlurView } from 'expo-blur';
 
 import { LightModeContext } from "./context/LightModeContext";
 import { fetchPrompt } from "../functions/fetchPromp";
@@ -75,13 +78,12 @@ const WriteContainer = ({ closeSheet, focusKeyboardState }: { closeSheet: any; f
         setPromptData(response);
         setUserFold("");
         setRefreshing(false);
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       })
       .catch((error) => {
         console.error("WriteContainer.tsx useEffect: @root", error);
         onToggleSnackBar();
-      })
-      .finally(() => {
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
       });
   }, []);
 
@@ -90,7 +92,7 @@ const WriteContainer = ({ closeSheet, focusKeyboardState }: { closeSheet: any; f
   }
 
   return (
-    <View>
+    <BottomSheetView>
       <ScrollView refreshControl={
         <RefreshControl
           onRefresh={onRefresh}
@@ -116,7 +118,7 @@ const WriteContainer = ({ closeSheet, focusKeyboardState }: { closeSheet: any; f
                   compact={true}
                 >Close</Button>
               </View>
-              <TextInput
+              <BottomSheetTextInput
                 spellCheck={false}
                 style={[styles.textInput, { color: parsedTheme.colors.text }]}
                 value={(promptData.content == undefined ? "" : promptData.content + " ") + userFold}
@@ -156,7 +158,7 @@ const WriteContainer = ({ closeSheet, focusKeyboardState }: { closeSheet: any; f
         </View>
       </ScrollView>
       <ReviewModal userFold={userFold} promptData={promptData} modalVisible={modalVisible} setModalVisible={setModalVisible} />
-    </View>
+    </BottomSheetView>
   );
 }
 
@@ -185,11 +187,6 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width * .9,
     minHeight: 240,
     borderColor: 'rgb(120, 69, 172)',
-    // borderWidth: 1,
-    // borderRadius: 10,
-    // paddingLeft: 8,
-    // paddingRight: 8,
-    // paddingBottom: 4,
     fontSize: 16,
   }
 });

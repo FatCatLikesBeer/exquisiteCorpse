@@ -1,5 +1,5 @@
 // AuthModals.tsx
-// TODO: Create a (?) popup explination next to Authentication title, explaining reason for vague auth reasoning
+// TODO: Create a (?) popup explanation next to Authentication title, explaining reason for vague auth reasoning
 // TODO: Implement forgot password function
 
 import React, { useState, useContext, useRef, Dispatch, SetStateAction } from "react";

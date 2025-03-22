@@ -22,8 +22,8 @@ const Binder = () => {
     setFocusWriteInput(!focusWriteInput);
   };
   const hideWrite = () => { writeComponentRef.current?.close() };
-  const writeComponentBottomSheetSnapPoints = useMemo(() => { return ["93%"] }, []);
-  const handleSheetChanges = useCallback((index: number) => { console.log("handleSheetChanges", index) }, []);
+  const writeComponentBottomSheetSnapPoints = useMemo(() => { return ["100"] }, []);
+  const handleSheetChanges = useCallback((index: number) => { }, []);
 
   useEffect(() => {
     async function getSheets() {
